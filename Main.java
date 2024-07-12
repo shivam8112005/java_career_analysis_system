@@ -184,6 +184,10 @@ import java.util.Scanner;
 }
 
  class UserService {
+    int Prog_skills_marks=0;
+    int Sys_and_Net_marks=0;
+    int sw_dev_marks=0;
+    int hw_embeded_sys_marks=0;
     public void addUser(User user) throws Exception{
         try (Connection connection = DatabaseUtil.getConnection()) {
             String query = "INSERT INTO users (name, email, skills, interests, personality_traits) VALUES (?, ?, ?, ?, ?)";
@@ -261,7 +265,186 @@ import java.util.Scanner;
 //     }
 
     // Other methods for skill assessment, interest profiling, etc.
-}
+    public void skillAssessment(){
+        Scanner sc=new Scanner(System.in);
+            
+                 String[][] questions = {
+                         // Programming Skills
+                         {"1. Which of the following is a programming language?",
+                                 "A. HTML",
+                                 "B. CSS",
+                                 "C. Java",
+                                 "D. SQL",
+                                 "Answer: C"
+                         },
+                         {"2. What is the output of the following code snippet?\nint a = 5;\nint b = 10;\nSystem.out.println(a + b);",
+                                 "A. 15",
+                                 "B. 510",
+                                 "C. 50",
+                                 "D. 105",
+                                 "Answer: A"
+                         },
+                         {"3. Which data structure allows you to store elements in a First-In-First-Out (FIFO) manner?",
+                                 "A. Stack",
+                                 "B. Queue",
+                                 "C. Array",
+                                 "D. Tree",
+                                 "Answer: B"
+                         },
+                         {"4. What is the time complexity of a binary search algorithm?",
+                                 "A. O(n)",
+                                 "B. O(n^2)",
+                                 "C. O(log n)",
+                                 "D. O(1)",
+                                 "Answer: C"
+                         },
+                         {"5. Which keyword is used to create a subclass in Java?",
+                                 "A. extend",
+                                 "B. extends",
+                                 "C. implement",
+                                 "D. inherits",
+                                 "Answer: B"
+                         },
+
+                         // Systems and Networking
+                         {"6. Which of the following is NOT a function of an operating system?",
+                                 "A. Memory management",
+                                 "B. File management",
+                                 "C. Compiler design",
+                                 "D. Process management",
+                                 "Answer: C"
+                         },
+                         {"7. What does TCP stand for?",
+                                 "A. Transmission Control Protocol",
+                                 "B. Transport Control Protocol",
+                                 "C. Transfer Control Protocol",
+                                 "D. Transmission Communication Protocol",
+                                 "Answer: A"
+                         },
+                         {"8. In networking, what is the primary purpose of DNS?",
+                                 "A. To translate domain names to IP addresses",
+                                 "B. To translate IP addresses to MAC addresses",
+                                 "C. To provide encryption for data packets",
+                                 "D. To monitor network traffic",
+                                 "Answer: A"
+                         },
+                         {"9. Which of the following is a common web application security vulnerability?",
+                                 "A. Buffer overflow",
+                                 "B. SQL injection",
+                                 "C. Stack overflow",
+                                 "D. Cross-threading",
+                                 "Answer: B"
+                         },
+                         {"10. What is context switching in an operating system?",
+                                 "A. Switching between different programming languages",
+                                 "B. Saving the state of a process and loading the state of another process",
+                                 "C. Changing the network protocol",
+                                 "D. Updating the user interface",
+                                 "Answer: B"
+                         },
+
+                         // Software Development Practices
+                         {"11. Which of the following commands is used to create a new branch in Git?",
+                                 "A. git branch new-branch",
+                                 "B. git create new-branch",
+                                 "C. git checkout new-branch",
+                                 "D. git new-branch",
+                                 "Answer: A"
+                         },
+                         {"12. Which type of testing is performed to ensure that the code changes do not break the existing functionality?",
+                                 "A. Unit testing",
+                                 "B. Integration testing",
+                                 "C. Regression testing",
+                                 "D. System testing",
+                                 "Answer: C"
+                         },
+                         {"13. What does SOLID stand for in software engineering principles?",
+                                 "A. Single responsibility, Open-closed, Liskov substitution, Interface segregation, Dependency inversion",
+                                 "B. Simple, Organized, Logical, Integrated, Durable",
+                                 "C. Structured, Object-oriented, Linked, Immutable, Dependable",
+                                 "D. Secure, Optimized, Lively, Interactive, Dynamic",
+                                 "Answer: A"
+                         },
+                         {"14. Which Agile methodology involves sprints and daily stand-up meetings?",
+                                 "A. Scrum",
+                                 "B. Kanban",
+                                 "C. Waterfall",
+                                 "D. Spiral",
+                                 "Answer: A"
+                         },
+                         {"15. What is the purpose of a unit test?",
+                                 "A. To test the overall system performance",
+                                 "B. To test individual units or components of the software",
+                                 "C. To test the interaction between integrated units",
+                                 "D. To test the software in a production environment",
+                                 "Answer: B"
+                         },
+
+                         // Hardware and Embedded Systems
+                         {"16. Which of the following is a microcontroller?",
+                                 "A. Intel Core i7",
+                                 "B. Raspberry Pi",
+                                 "C. Arduino Uno",
+                                 "D. NVIDIA GeForce",
+                                 "Answer: C"
+                         },
+                         {"17. What is the primary difference between a microcontroller and a microprocessor?",
+                                 "A. Microcontrollers have integrated memory and peripherals",
+                                 "B. Microprocessors are used in embedded systems",
+                                 "C. Microcontrollers are more powerful than microprocessors",
+                                 "D. Microprocessors have integrated memory and peripherals",
+                                 "Answer: A"
+                         },
+                         {"18. Which type of logic circuit outputs a high signal only when all its inputs are high?",
+                                 "A. OR gate",
+                                 "B. AND gate",
+                                 "C. XOR gate",
+                                 "D. NOR gate",
+                                 "Answer: B"
+                         },
+                         {"19. What is the primary consideration when developing software for embedded systems?",
+                                 "A. User interface design",
+                                 "B. Power consumption",
+                                 "C. Network speed",
+                                 "D. Color scheme",
+                                 "Answer: B"
+                         },
+                         {"20. Which component is used to store data temporarily in a computer system?",
+                                 "A. CPU",
+                                 "B. Hard drive",
+                                 "C. RAM",
+                                 "D. GPU",
+                                 "Answer: C"
+                         }
+                 };
+                 String[] ans={"C","A","B","C","B","C","A","A","B","B","A","C","A","A","B","C","A","B","B","C"};
+
+
+
+                  int cnt=0;
+                 for (String[] question : questions){
+                     for (String line : question) {
+                         System.out.println(line);
+                         System.out.print("Ans: ");
+                         String ans1=sc.next();
+                         if(cnt<5 && ans[cnt].equalsIgnoreCase(ans1)){
+                             Prog_skills_marks++;
+                         }else if(cnt>=5 && cnt<=9 && ans[cnt].equalsIgnoreCase(ans1)){
+                            Sys_and_Net_marks++;
+                         }else if(cnt>=10 && cnt<=15 && ans[cnt].equalsIgnoreCase(ans1)){
+                            sw_dev_marks++;
+                         }else{
+                            hw_embeded_sys_marks++;
+                         }
+                         cnt++;
+                     }
+
+                     System.out.println();
+                 }
+                 //give result in this method only as per the pdf
+             }
+         }
+
 
 
 
@@ -283,6 +466,7 @@ public class Main {
             System.out.println("3. Get User by Email");
             System.out.println("4. Get Career by ID");
             System.out.println("5. Exit");
+            System.out.println("6. skilled assessment");
             System.out.print("Choose an option: ");
             int choice = scanner.nextInt();
             scanner.nextLine();
@@ -302,6 +486,8 @@ public class Main {
                 case 5:
                     System.exit(0);
                     break;
+                case 6:
+
                 default:
                     System.out.println("Invalid option. Try again.");
             }
