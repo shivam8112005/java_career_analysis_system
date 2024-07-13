@@ -441,7 +441,14 @@ import java.util.Scanner;
 
                      System.out.println();
                  }
-                 //give result in this method only as per the pdf
+                  //give result in this method only as per the pdf(done)
+                 System.out.println("Result: ");
+                 System.out.println("Programming Skills: "+Prog_skills_marks+"/5  Systems and Networking: "+Sys_and_Net_marks
+                 +"/5   Software Development Practices: "+sw_dev_marks+"/5  Hardware and Embedded Systems: "+hw_embeded_sys_marks
+                 +"/5");
+
+                 //now give strength weakness and area of improvements statement based on result
+                
              }
          }
 
