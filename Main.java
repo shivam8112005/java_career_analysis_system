@@ -1,18 +1,18 @@
-
-
+//first sign in then only you can access all the other functionality
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Scanner;
 
 
- class DatabaseUtil {
+class DatabaseUtil {
     private static final String URL = "jdbc:mysql://localhost:3306/career_analysis_system";
     private static final String USER = "root";
     private static final String PASSWORD = "Shuklas@#303";
-
     public static Connection getConnection() throws Exception {
         Class.forName("com.mysql.cj.jdbc.Driver");
         return DriverManager.getConnection(URL, USER, PASSWORD);
@@ -87,9 +87,6 @@ import java.util.Scanner;
     private String requiredSkills;
     private String educationalRequirements;
     private String industryInsights;
-
-
-
      public int getId() {
          return id;
      }
@@ -139,11 +136,9 @@ import java.util.Scanner;
      }
  }
 
-
-
-
  class CareerService {
     public void addCareer(Career career) throws Exception{
+        
         try (Connection connection = DatabaseUtil.getConnection()) {
             String query = "INSERT INTO careers (name, description, required_skills, educational_requirements, industry_insights) VALUES (?, ?, ?, ?, ?)";
             PreparedStatement preparedStatement = connection.prepareStatement(query);
@@ -182,12 +177,15 @@ import java.util.Scanner;
 
     // Other methods for career(jobs) matching, industry insights, etc.
 }
-
  class UserService {
+    static HashMap<String, String> recommendations = new HashMap<>();
+    ArrayList<String> resultLog=new ArrayList<>();
     int Prog_skills_marks=0;
     int Sys_and_Net_marks=0;
     int sw_dev_marks=0;
     int hw_embeded_sys_marks=0;
+    Scanner sc=new Scanner(System.in);
+   
     public void addUser(User user) throws Exception{
         try (Connection connection = DatabaseUtil.getConnection()) {
             String query = "INSERT INTO users (name, email, skills, interests, personality_traits) VALUES (?, ?, ?, ?, ?)";
@@ -245,226 +243,326 @@ import java.util.Scanner;
          }
          return user;
      }
-//     public void getCareerById() {
-//         System.out.print("Enter career ID: ");
-//         int id = scanner.nextInt();
-//         scanner.nextLine();
-//
-//         Career career = careerService.getCareerById(id);
-//         if (career != null) {
-//             System.out.println("Career Details:");
-//             System.out.println("ID: " + career.getId());
-//             System.out.println("Name: " + career.getName());
-//             System.out.println("Description: " + career.getDescription());
-//             System.out.println("Required Skills: " + career.getRequiredSkills());
-//             System.out.println("Educational Requirements: " + career.getEducationalRequirements());
-//             System.out.println("Industry Insights: " + career.getIndustryInsights());
-//         } else {
-//             System.out.println("Career not found.");
-//         }
-//     }
+
 
     // Other methods for skill assessment, interest profiling, etc.
     public void skillAssessment(){
-        Scanner sc=new Scanner(System.in);
-            
                  String[][] questions = {
-                         // Programming Skills
                          {"1. Which of the following is a programming language?",
                                  "A. HTML",
                                  "B. CSS",
                                  "C. Java",
-                                 "D. SQL",
-                                 "Answer: C"
+                                 "D. SQL"
                          },
                          {"2. What is the output of the following code snippet?\nint a = 5;\nint b = 10;\nSystem.out.println(a + b);",
                                  "A. 15",
                                  "B. 510",
                                  "C. 50",
-                                 "D. 105",
-                                 "Answer: A"
+                                 "D. 105"
                          },
                          {"3. Which data structure allows you to store elements in a First-In-First-Out (FIFO) manner?",
                                  "A. Stack",
                                  "B. Queue",
                                  "C. Array",
-                                 "D. Tree",
-                                 "Answer: B"
+                                 "D. Tree"
                          },
                          {"4. What is the time complexity of a binary search algorithm?",
                                  "A. O(n)",
                                  "B. O(n^2)",
                                  "C. O(log n)",
-                                 "D. O(1)",
-                                 "Answer: C"
+                                 "D. O(1)"
                          },
                          {"5. Which keyword is used to create a subclass in Java?",
                                  "A. extend",
                                  "B. extends",
                                  "C. implement",
-                                 "D. inherits",
-                                 "Answer: B"
+                                 "D. inherits"
                          },
 
-                         // Systems and Networking
+                         
                          {"6. Which of the following is NOT a function of an operating system?",
                                  "A. Memory management",
                                  "B. File management",
                                  "C. Compiler design",
-                                 "D. Process management",
-                                 "Answer: C"
+                                 "D. Process management"
                          },
                          {"7. What does TCP stand for?",
                                  "A. Transmission Control Protocol",
                                  "B. Transport Control Protocol",
                                  "C. Transfer Control Protocol",
-                                 "D. Transmission Communication Protocol",
-                                 "Answer: A"
+                                 "D. Transmission Communication Protocol"
                          },
                          {"8. In networking, what is the primary purpose of DNS?",
                                  "A. To translate domain names to IP addresses",
                                  "B. To translate IP addresses to MAC addresses",
                                  "C. To provide encryption for data packets",
-                                 "D. To monitor network traffic",
-                                 "Answer: A"
+                                 "D. To monitor network traffic"
                          },
                          {"9. Which of the following is a common web application security vulnerability?",
                                  "A. Buffer overflow",
                                  "B. SQL injection",
                                  "C. Stack overflow",
-                                 "D. Cross-threading",
-                                 "Answer: B"
+                                 "D. Cross-threading"
                          },
                          {"10. What is context switching in an operating system?",
                                  "A. Switching between different programming languages",
                                  "B. Saving the state of a process and loading the state of another process",
                                  "C. Changing the network protocol",
-                                 "D. Updating the user interface",
-                                 "Answer: B"
+                                 "D. Updating the user interface"
                          },
 
-                         // Software Development Practices
+                        
                          {"11. Which of the following commands is used to create a new branch in Git?",
                                  "A. git branch new-branch",
                                  "B. git create new-branch",
                                  "C. git checkout new-branch",
-                                 "D. git new-branch",
-                                 "Answer: A"
+                                 "D. git new-branch"
                          },
                          {"12. Which type of testing is performed to ensure that the code changes do not break the existing functionality?",
                                  "A. Unit testing",
                                  "B. Integration testing",
                                  "C. Regression testing",
-                                 "D. System testing",
-                                 "Answer: C"
+                                 "D. System testing"
                          },
                          {"13. What does SOLID stand for in software engineering principles?",
                                  "A. Single responsibility, Open-closed, Liskov substitution, Interface segregation, Dependency inversion",
                                  "B. Simple, Organized, Logical, Integrated, Durable",
                                  "C. Structured, Object-oriented, Linked, Immutable, Dependable",
-                                 "D. Secure, Optimized, Lively, Interactive, Dynamic",
-                                 "Answer: A"
+                                 "D. Secure, Optimized, Lively, Interactive, Dynamic"
                          },
                          {"14. Which Agile methodology involves sprints and daily stand-up meetings?",
                                  "A. Scrum",
                                  "B. Kanban",
                                  "C. Waterfall",
-                                 "D. Spiral",
-                                 "Answer: A"
+                                 "D. Spiral"
                          },
                          {"15. What is the purpose of a unit test?",
                                  "A. To test the overall system performance",
                                  "B. To test individual units or components of the software",
                                  "C. To test the interaction between integrated units",
-                                 "D. To test the software in a production environment",
-                                 "Answer: B"
+                                 "D. To test the software in a production environment"
                          },
 
-                         // Hardware and Embedded Systems
+                         
                          {"16. Which of the following is a microcontroller?",
                                  "A. Intel Core i7",
                                  "B. Raspberry Pi",
                                  "C. Arduino Uno",
-                                 "D. NVIDIA GeForce",
-                                 "Answer: C"
+                                 "D. NVIDIA GeForce"
                          },
                          {"17. What is the primary difference between a microcontroller and a microprocessor?",
                                  "A. Microcontrollers have integrated memory and peripherals",
                                  "B. Microprocessors are used in embedded systems",
                                  "C. Microcontrollers are more powerful than microprocessors",
-                                 "D. Microprocessors have integrated memory and peripherals",
-                                 "Answer: A"
+                                 "D. Microprocessors have integrated memory and peripherals"
                          },
                          {"18. Which type of logic circuit outputs a high signal only when all its inputs are high?",
                                  "A. OR gate",
                                  "B. AND gate",
                                  "C. XOR gate",
-                                 "D. NOR gate",
-                                 "Answer: B"
+                                 "D. NOR gate"
                          },
                          {"19. What is the primary consideration when developing software for embedded systems?",
                                  "A. User interface design",
                                  "B. Power consumption",
                                  "C. Network speed",
-                                 "D. Color scheme",
-                                 "Answer: B"
+                                 "D. Color scheme"
                          },
                          {"20. Which component is used to store data temporarily in a computer system?",
                                  "A. CPU",
                                  "B. Hard drive",
                                  "C. RAM",
-                                 "D. GPU",
-                                 "Answer: C"
+                                 "D. GPU"
                          }
                  };
                  String[] ans={"C","A","B","C","B","C","A","A","B","B","A","C","A","A","B","C","A","B","B","C"};
-
-
-
                   int cnt=0;
                  for (String[] question : questions){
                      for (String line : question) {
                          System.out.println(line);
-                         System.out.print("Ans: ");
-                         String ans1=sc.next();
-                         if(cnt<5 && ans[cnt].equalsIgnoreCase(ans1)){
-                             Prog_skills_marks++;
-                         }else if(cnt>=5 && cnt<=9 && ans[cnt].equalsIgnoreCase(ans1)){
-                            Sys_and_Net_marks++;
-                         }else if(cnt>=10 && cnt<=15 && ans[cnt].equalsIgnoreCase(ans1)){
-                            sw_dev_marks++;
-                         }else{
-                            hw_embeded_sys_marks++;
-                         }
-                         cnt++;
+                     } System.out.print("Ans: ");
+                     String ans1=sc.next();
+                     if(cnt<5 && ans[cnt].equalsIgnoreCase(ans1)){
+                         Prog_skills_marks++;
+                     }else if(cnt>=5 && cnt<=9 && ans[cnt].equalsIgnoreCase(ans1)){
+                        Sys_and_Net_marks++;
+                     }else if(cnt>=10 && cnt<=14 && ans[cnt].equalsIgnoreCase(ans1)){
+                        sw_dev_marks++;
+                     }else if(cnt>=15 && cnt<=19 && ans[cnt].equalsIgnoreCase(ans1)){
+                        hw_embeded_sys_marks++;
                      }
-
+                     cnt++;
                      System.out.println();
                  }
-                  //give result in this method only as per the pdf(done)
                  System.out.println("Result: ");
                  System.out.println("Programming Skills: "+Prog_skills_marks+"/5  Systems and Networking: "+Sys_and_Net_marks
                  +"/5   Software Development Practices: "+sw_dev_marks+"/5  Hardware and Embedded Systems: "+hw_embeded_sys_marks
                  +"/5");
-
-                 //now give strength weakness and area of improvements statement based on result
-                
-             }
-         }
-
-
-
-
-
-
-
-
-
+                 resultLog.add("Programming Skills: "+Prog_skills_marks+"/5  Systems and Networking: "+Sys_and_Net_marks
+                 +"/5   Software Development Practices: "+sw_dev_marks+"/5  Hardware and Embedded Systems: "+hw_embeded_sys_marks
+                 +"/5");
+                 generateEvaluationStatements(Prog_skills_marks, Sys_and_Net_marks, sw_dev_marks, hw_embeded_sys_marks);
+                 }
+                 public void printResultLog(){
+                    System.out.println("Result Log:");
+                    for(String s:resultLog){
+                        System.out.println(s);
+                    }
+                 }
+                 public static void generateEvaluationStatements(int prog, int sys, int swDev, int hw) {
+                    StringBuilder strengths = new StringBuilder("Strengths: ");
+                    StringBuilder weaknesses = new StringBuilder("Weaknesses: ");
+                    StringBuilder improvements = new StringBuilder("Areas of Improvement: ");
+                    int strengthThreshold = 4;
+                    int weaknessThreshold = 2;
+                    if (prog >= strengthThreshold) {
+                        strengths.append("Programming Skills, ");
+                    } else if (prog <= weaknessThreshold) {
+                        weaknesses.append("Programming Skills, ");
+                        improvements.append("Programming Skills, ");
+                    }
+                    if (sys >= strengthThreshold) {
+                        strengths.append("Systems and Networking, ");
+                    } else if (sys <= weaknessThreshold) {
+                        weaknesses.append("Systems and Networking, ");
+                        improvements.append("Systems and Networking, ");
+                    }
+                    if (swDev >= strengthThreshold) {
+                        strengths.append("Software Development Practices, ");
+                    } else if (swDev <= weaknessThreshold) {
+                        weaknesses.append("Software Development Practices, ");
+                        improvements.append("Software Development Practices, ");
+                    }
+                    if (hw >= strengthThreshold) {
+                        strengths.append("Hardware and Embedded Systems, ");
+                    } else if (hw <= weaknessThreshold) {
+                        weaknesses.append("Hardware and Embedded Systems, ");
+                        improvements.append("Hardware and Embedded Systems, ");
+                    }
+                    System.out.println();
+                    System.out.println(strengths.toString());
+                    System.out.println(weaknesses.toString());
+                    System.out.println(improvements.toString());
+                    System.out.println();
+    }
+    public void interestProfiling(){
+        int passion;
+        int interest;
+        System.out.println("choose any one Interest of the following:");
+        System.out.println("1. Manipulating Data");
+        System.out.println("2. Devloping Websites and Applications");
+        System.out.println("3. Devloping Game Applications");
+        System.out.println("4. Security and Ethical Hacking");
+        System.out.println("5. Managing Stored Data on Cloud");
+        System.out.println("6. Artificial Intelligence");
+        System.out.println("7. Robots");
+        while(true){
+            interest = sc.nextInt();
+           if(interest>=1 && interest<=7){
+               break;
+           }
+           System.out.println("please enter valid input");
+       }
+        System.out.println("Choose any one Passion of the following:");
+        System.out.println("1. Working with large datasets to find trends and insights");
+        System.out.println("2. Building interactive and user-friendly web interfaces");
+        System.out.println("3. Creating immersive and entertaining digital experiences");
+        System.out.println("4. Protecting systems and networks from cyber threats");
+        System.out.println("5. Managing and optimizing data storage in remote servers");
+        System.out.println("6. Developing intelligent systems that can learn and adapt");
+        System.out.println("7. Designing and programming autonomous machines");
+        while(true){
+             passion = sc.nextInt();
+            if(passion>=1 && passion<=7){
+                break;
+            }
+            System.out.println("please enter valid input");
+        }
+        giveRecommendations(interest, passion);
+    }
+    
+    public static void giveRecommendations(int interest, int passion) {
+        recommendations.put("1-1", "Data Science, Big Data Analytics");
+        recommendations.put("1-6", "AI development, Machine Learning Engineering");
+        recommendations.put("2-2", "Front-end or Back-end Development, Full Stack Development");
+        recommendations.put("3-3", "Game Design, Game Programming");
+        recommendations.put("4-4", "Penetration Testing, Security Analysis");
+        recommendations.put("5-5", "Cloud Architecture, Cloud Security");
+        recommendations.put("6-6", "AI development, Machine Learning Engineering");
+        recommendations.put("7-7", "Robotics Engineering, Automation");
+        String key = interest + "-" + passion;
+        String recommendation = recommendations.get(key);
+        if(recommendation==null){
+            String recomendation1="";
+            if(interest==1){
+                recomendation1+="Data Science or ";
+            }else if(interest==2){
+                recomendation1+="Web Devloper or ";
+            }else if(interest==3){
+                recomendation1+="Game Devloper or ";
+            }else if(interest==4){
+                recomendation1+="Cyber Security or Ethical Hacking or ";
+            }else if(interest==5){
+                recomendation1+="Cloud Computing or ";
+            }else if(interest==6){
+                recomendation1+="AI development and Machine Learning Engineering";
+            }else if(interest==7){
+                recomendation1+="Robotics Engineering or ";
+            }
+            if(passion==1){
+                recomendation1+="Big Data Analytics";
+            }
+            else if(passion==2){
+                recomendation1+="Full Stack Development";
+            }else if(passion==3){
+                recomendation1+="Game Design";
+            }else if(passion==4){
+                recomendation1+="Security Analysis";
+            }else if(passion==5){
+                recomendation1+="Cloud Architecture";
+            }else if(passion==7){
+                recomendation1+="Automation";
+            }
+            System.out.println("Based on your choices, here are some recommendations:");
+            System.out.println("Interest: " + getInterestDescription(interest));
+            System.out.println("Passion: " + getPassionDescription(passion));
+            System.out.println("Recommendation: " + recomendation1);
+        }else{
+            System.out.println("Based on your choices, here are some recommendations:");
+        System.out.println("Interest: " + getInterestDescription(interest));
+        System.out.println("Passion: " + getPassionDescription(passion));
+        System.out.println("Recommendation: " + recommendation);
+        }
+    }
+    public static String getInterestDescription(int interest) {
+        switch (interest) {
+            case 1: return "Manipulating Data";
+            case 2: return "Developing Websites and Applications";
+            case 3: return "Developing Game Applications";
+            case 4: return "Security and Ethical Hacking";
+            case 5: return "Managing Stored Data on Cloud";
+            case 6: return "Artificial Intelligence";
+            case 7: return "Robots";
+            default: return "Unknown Interest";
+        }
+ }
+ public static String getPassionDescription(int passion) {
+    switch (passion) {
+        case 1: return "Working with large datasets to find trends and insights";
+        case 2: return "Building interactive and user-friendly web interfaces";
+        case 3: return "Creating immersive and entertaining digital experiences";
+        case 4: return "Protecting systems and networks from cyber threats";
+        case 5: return "Managing and optimizing data storage in remote servers";
+        case 6: return "Developing intelligent systems that can learn and adapt";
+        case 7: return "Designing and programming autonomous machines";
+        default: return "Unknown Passion";
+    }
+}
+ }
 public class Main {
     private static final Scanner scanner = new Scanner(System.in);
     private static final UserService userService = new UserService();
     private static final CareerService careerService = new CareerService();
-
     public static void main(String[] args) throws Exception {
         while (true) {
             System.out.println("Career Analysis System");
@@ -473,7 +571,9 @@ public class Main {
             System.out.println("3. Get User by Email");
             System.out.println("4. Get Career by ID");
             System.out.println("5. Exit");
-            System.out.println("6. skilled assessment");
+            System.out.println("6. interest profiling");
+            System.out.println("7. skilled assessment");
+            System.out.println("8. Result Log");
             System.out.print("Choose an option: ");
             int choice = scanner.nextInt();
             scanner.nextLine();
@@ -494,34 +594,19 @@ public class Main {
                     System.exit(0);
                     break;
                 case 6:
-
+                userService.interestProfiling();
+                break;
+                case 7:
+                userService.skillAssessment();
+                break;
+                case 8:
+                userService.printResultLog();
+                break;
                 default:
                     System.out.println("Invalid option. Try again.");
             }
         }
     }
-    //old
-    private static void addUser() throws Exception{
-        System.out.print("Enter name: ");
-        String name = scanner.nextLine();
-        System.out.print("Enter email: ");
-        String email = scanner.nextLine();
-        System.out.print("Enter skills: ");
-        String skills = scanner.nextLine();
-        System.out.print("Enter interests: ");
-        String interests = scanner.nextLine();
-        System.out.print("Enter personality traits: ");
-        String personalityTraits = scanner.nextLine();
-        User user = new User();
-        user.setName(name);
-        user.setEmail(email);
-        user.setSkills(skills);
-        user.setInterests(interests);
-        user.setPersonalityTraits(personalityTraits);
-        userService.addUser(user);
-        System.out.println("User added successfully.");
-    }
-
     private static void addCareer() throws Exception{
         System.out.print("Enter career name: ");
         String name = scanner.nextLine();
@@ -560,7 +645,6 @@ public class Main {
             System.out.println("User not found.");
         }
     }
-
     private static void getCareerById() throws Exception{
         System.out.print("Enter career ID: ");
         int id = scanner.nextInt();
