@@ -10,6 +10,9 @@ public class Main {
         }else{
             System.out.println("fail");
         }
+       
+    }
+    private void userMenu() throws Exception{
         while (true) {
             System.out.println("Career Analysis System");
             System.out.println("1. Sign In");
@@ -25,7 +28,7 @@ public class Main {
             scanner.nextLine();
             switch (choice) {
                 case 1:
-                    signIn();
+                    //signIn();
                     break;
                 case 2:
                     addCareer();
@@ -108,35 +111,7 @@ public class Main {
             System.out.println("Career not found.");
         }
     }
-    private static void signIn() throws Exception{
-        System.out.print("Enter email: ");
-        String email = scanner.nextLine();
-        User user = userService.getUserByEmail(email);
-        if (user != null) {
-            System.out.println("User signed in successfully.");
-            System.out.println("Welcome back, " + user.getName());
-        } else {
-            createUser(email);
-        }
-    }
-    private static void createUser(String email) throws Exception{
-        System.out.print("Enter name: ");
-        String name = scanner.nextLine();
-        System.out.print("Enter skills: ");
-        String skills = scanner.nextLine();
-        System.out.print("Enter interests: ");
-        String interests = scanner.nextLine();
-        System.out.print("Enter personality traits: ");
-        String personalityTraits = scanner.nextLine();
-        User newUser = new User();
-        newUser.setName(name);
-        newUser.setEmail(email);
-        newUser.setSkills(skills);
-        newUser.setInterests(interests);
-        newUser.setPersonalityTraits(personalityTraits);
-        userService.addUser(newUser);
-        System.out.println("User created and signed in successfully.");
-    }
+    
     private static void getUserByEmail() throws Exception {
         System.out.print("Enter user email: ");
         String email = scanner.nextLine();

@@ -1,12 +1,12 @@
 import java.sql.Connection;
-import java.sql.DriverManager;
+
 import java.sql.SQLException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
-public class UserService {
+public class UserService extends User{
     static HashMap<String, String> recommendations = new HashMap<>();
     ArrayList<String> resultLog=new ArrayList<>();
     int Prog_skills_marks=0;
@@ -15,16 +15,26 @@ public class UserService {
     int hw_embeded_sys_marks=0;
     Scanner sc=new Scanner(System.in);
    
-    public void addUser(User user) throws Exception{
+    public void addUser(User user, String email) throws Exception{
         try (Connection connection = DatabaseUtil.getConnection()) {
-            String query = "INSERT INTO users (name, email, skills, interests, personality_traits) VALUES (?, ?, ?, ?, ?)";
+            String query = "INSERT INTO users (name, email, password, skills, interests, personality_traits) VALUES (?, ?, ?, ?, ?, ?)";
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             preparedStatement.setString(1, user.getName());
             preparedStatement.setString(2, user.getEmail());
-            preparedStatement.setString(3, user.getSkills());
-            preparedStatement.setString(4, user.getInterests());
-            preparedStatement.setString(5, user.getPersonalityTraits());
+            preparedStatement.setString(3, user.getPassword());
+            preparedStatement.setString(4, user.getSkills());
+            preparedStatement.setString(5, user.getInterests());
+            preparedStatement.setString(6, user.getPersonalityTraits());
             preparedStatement.executeUpdate();
+            String query1="SELECT id FROM users WHERE email= ?";
+            PreparedStatement pst=connection.prepareStatement(query1);
+            pst.setString(1, user.getEmail());
+            ResultSet rs=pst.executeQuery();
+            if(rs.next()){
+                int id=rs.getInt("id");
+                user.setId(id);
+            }
+            users.put(email, user);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -51,27 +61,7 @@ public class UserService {
         }
         return user;
     }
-     public User getUserByEmail(String email) throws Exception {
-         User user = null;
-         try (Connection connection = DatabaseUtil.getConnection()) {
-             String query = "SELECT * FROM users WHERE email = ?";
-             PreparedStatement preparedStatement = connection.prepareStatement(query);
-             preparedStatement.setString(1, email);
-             ResultSet resultSet = preparedStatement.executeQuery();
-             if (resultSet.next()) {
-                 user = new User();
-                 user.setId(resultSet.getInt("id"));
-                 user.setName(resultSet.getString("name"));
-                 user.setEmail(resultSet.getString("email"));
-                 user.setSkills(resultSet.getString("skills"));
-                 user.setInterests(resultSet.getString("interests"));
-                 user.setPersonalityTraits(resultSet.getString("personality_traits"));
-             }
-         } catch (SQLException e) {
-             e.printStackTrace();
-         }
-         return user;
-     }
+    
 
 
     // Other methods for skill assessment, interest profiling, etc.
