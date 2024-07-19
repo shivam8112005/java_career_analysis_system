@@ -8,7 +8,9 @@ import java.util.HashMap;
 import java.util.Scanner;
 public class UserService extends User{
     static HashMap<String, String> recommendations = new HashMap<>();
-    ArrayList<String> resultLog=new ArrayList<>();
+    ArrayList<String> skillAssessmentResultLog=new ArrayList<>();
+    HashMap<String,String> personalityAssessmentResultLog=new HashMap<>();
+    
     int Prog_skills_marks=0;
     int Sys_and_Net_marks=0;
     int sw_dev_marks=0;
@@ -17,14 +19,16 @@ public class UserService extends User{
    
     public void addUser(User user, String email) throws Exception{
         try (Connection connection = DatabaseUtil.getConnection()) {
-            String query = "INSERT INTO users (name, email, password, skills, interests, personality_traits) VALUES (?, ?, ?, ?, ?, ?)";
+            String query = "INSERT INTO users (name, email, password, location, education, skills, interests, personality_traits) VALUES (?, ?, ?, ?, ?, ?, ?, ? )";
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             preparedStatement.setString(1, user.getName());
             preparedStatement.setString(2, user.getEmail());
             preparedStatement.setString(3, user.getPassword());
-            preparedStatement.setString(4, user.getSkills());
-            preparedStatement.setString(5, user.getInterests());
-            preparedStatement.setString(6, user.getPersonalityTraits());
+            preparedStatement.setString(4, user.getLocation());
+            preparedStatement.setString(5, user.getEducation());
+            preparedStatement.setString(6, user.getSkills());
+            preparedStatement.setString(7, user.getInterests());
+            preparedStatement.setString(8, user.getPersonalityTraits());
             preparedStatement.executeUpdate();
             String query1="SELECT id FROM users WHERE email= ?";
             PreparedStatement pst=connection.prepareStatement(query1);
@@ -217,15 +221,17 @@ public class UserService extends User{
                  System.out.println("Programming Skills: "+Prog_skills_marks+"/5  Systems and Networking: "+Sys_and_Net_marks
                  +"/5   Software Development Practices: "+sw_dev_marks+"/5  Hardware and Embedded Systems: "+hw_embeded_sys_marks
                  +"/5");
-                 resultLog.add("Programming Skills: "+Prog_skills_marks+"/5  Systems and Networking: "+Sys_and_Net_marks
+                 skillAssessmentResultLog.add("Programming Skills: "+Prog_skills_marks+"/5  Systems and Networking: "+Sys_and_Net_marks
                  +"/5   Software Development Practices: "+sw_dev_marks+"/5  Hardware and Embedded Systems: "+hw_embeded_sys_marks
                  +"/5");
                  generateEvaluationStatements(Prog_skills_marks, Sys_and_Net_marks, sw_dev_marks, hw_embeded_sys_marks);
                  }
                  public void printResultLog(){
                     System.out.println("Result Log:");
-                    for(String s:resultLog){
-                        System.out.println(s);
+                    int i=1;
+                    for(String s:skillAssessmentResultLog){
+                        System.out.println(i+". "+s);
+                        i++;
                     }
                  }
                  public static void generateEvaluationStatements(int prog, int sys, int swDev, int hw) {
@@ -377,4 +383,94 @@ public class UserService extends User{
         default: return "Unknown Passion";
     }
 }
+
+
+
+public void personalityAssessment(int x, User a) {
+    if(x!=1){
+        System.out.println("This test will affect Your Profile's Personality Traits Section !");
+        System.out.println("Want to continue ? (y/n): ");
+        String s=sc.next();
+        if(s.equalsIgnoreCase("n")){
+            return;
+        }
+    }
+   
+    System.out.println("Personality Assessment: ");
+    // Questions for the personality test
+   String[] QUESTIONS = {
+    "I enjoy analyzing complex problems to find efficient solutions.",
+    "I pay close attention to details when working on a project.",
+    "I thrive on solving challenging problems.",
+    "I often come up with innovative ideas for projects.",
+    "I work well in collaborative team environments.",
+    "I persist through difficulties until I find a solution."
+};
+
+// Corresponding traits for each question
+   String[] TRAITS = {
+    "Analytical Thinking",
+    "Attention to Detail",
+    "Problem Solving",
+    "Innovation",
+    "Teamwork",
+    "Persistence"
+};
+
+  // Possible career suggestions based on dominant trait
+   String[][] CAREERS = {
+    {"Data Analyst", "Systems Analyst", "Software Developer"},
+    {"Quality Assurance Engineer", "Technical Writer", "Database Administrator"},
+    {"Software Engineer", "Cybersecurity Specialist", "Network Engineer"},
+    {"Research Scientist", "Product Developer", "Startup Founder"},
+    {"Project Manager", "Scrum Master", "DevOps Engineer"},
+    {"Systems Administrator", "Site Reliability Engineer", "Technical Support Specialist"}
+};
+    Scanner scanner = new Scanner(System.in);
+    int[] scores = new int[TRAITS.length];
+    
+    // Ask each question and record the response
+    for (int i = 0; i < QUESTIONS.length; i++) {
+        System.out.println(QUESTIONS[i]);
+        System.out.print("Rate your agreement (1-5): ");
+        int response = scanner.nextInt();
+        scores[i] = response;
+    }
+
+    // Determine the dominant trait
+    int maxScoreIndex = 0;
+    for (int i = 1; i < scores.length; i++) {
+        if (scores[i] > scores[maxScoreIndex]) {
+            maxScoreIndex = i;
+        }
+    }
+    
+    // Display the result
+    String s="";
+    a.setPersonalityTraits(TRAITS[maxScoreIndex]);
+    System.out.println("Your dominant trait is: " + TRAITS[maxScoreIndex]);
+    System.out.println("Based on your personality, you might enjoy careers such as:");
+    for (String career : CAREERS[maxScoreIndex]) {
+        System.out.println("- " + career);
+        s+="- "+career;
+    }
+    personalityAssessmentResultLog.put(TRAITS[maxScoreIndex], s);
+//scanner.nextLine();
+  //  scanner.close();
+}
+public void personalityAssessmentResultLog(){
+    System.out.println("ResultLog: ");
+    int i=1;
+    for(String s: personalityAssessmentResultLog.keySet()){
+        System.out.println(i+". "+s+" - "+personalityAssessmentResultLog.get(s));
+        i++;
+    }
+}
+
+
+
+
  }
+
+
+   
