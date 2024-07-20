@@ -1,5 +1,6 @@
 import java.util.*;
-
+import java.sql.ResultSet;
+import java.sql.Statement;
 public class UserMenu extends User {
     private static final UserService userService = new UserService();
     static Scanner sc=new Scanner(System.in);
@@ -37,6 +38,13 @@ public class UserMenu extends User {
         }
     }
     public static void main(String[] args) throws Exception{
+        
+        // String querry="SELECT * FROM users";
+        // Statement st=DatabaseUtil.getConnection().createStatement();
+        // ResultSet rs=st.executeQuery(querry);
+        // while(rs.next()){
+
+        // }
         UserMenu um=new UserMenu();
         um.signUpMenu();
     }
@@ -106,6 +114,7 @@ public class UserMenu extends User {
     private  void createUser(String email) throws Exception{
         this.u = new User();
         setPassword(u);
+        System.out.println("jfberiughiuehgernig   1");
         System.out.print("Enter name: ");
         sc.nextLine();
         String name = sc.nextLine();
@@ -113,16 +122,12 @@ public class UserMenu extends User {
         String edu=sc.nextLine();
         System.out.print("Enter Location: ");
         String location=sc.nextLine();
-        System.out.print("Enter skills: ");
-        String skills = sc.nextLine();
-        System.out.print("Enter interests: ");
-        String interests = sc.nextLine();
+        System.out.println("fk.ewljfejrog e22 222");
         userService.personalityAssessment(u.pt,  this.u);
         u.pt++;
         u.setName(name);
         u.setEmail(email);
-        u.setSkills(skills);
-        u.setInterests(interests);
+        u.setSkill();
         u.setLocation(location);
        u.setEducation(edu);
         userService.addUser(u,email);
