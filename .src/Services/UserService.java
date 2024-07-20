@@ -1,6 +1,7 @@
 import java.sql.Connection;
 
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
@@ -19,16 +20,16 @@ public class UserService extends User{
    
     public void addUser(User user, String email) throws Exception{
         try (Connection connection = DatabaseUtil.getConnection()) {
-            String query = "INSERT INTO users (name, email, password, location, education, skills, interests, personality_traits) VALUES (?, ?, ?, ?, ?, ?, ?, ? )";
+            String query = "INSERT INTO users (name, email, password, location, education, personality_traits) VALUES (?, ?, ?, ?, ?, ? )";
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             preparedStatement.setString(1, user.getName());
             preparedStatement.setString(2, user.getEmail());
             preparedStatement.setString(3, user.getPassword());
             preparedStatement.setString(4, user.getLocation());
             preparedStatement.setString(5, user.getEducation());
-            preparedStatement.setString(6, user.getSkills());
-            preparedStatement.setString(7, user.getInterests());
-            preparedStatement.setString(8, user.getPersonalityTraits());
+            //preparedStatement.setString(6, user.getSkills());
+            //preparedStatement.setString(7, user.getInterests());
+            preparedStatement.setString(6, user.getPersonalityTraits());
             preparedStatement.executeUpdate();
             String query1="SELECT id FROM users WHERE email= ?";
             PreparedStatement pst=connection.prepareStatement(query1);
@@ -41,6 +42,17 @@ public class UserService extends User{
             users.put(email, user);
         } catch (SQLException e) {
             e.printStackTrace();
+        }
+        for(int i=0;i<user.skills.size();i++){
+            insertUserSkill(user.getId(), user.skills.get(i).getSkillId());
+        }
+        
+    }
+    public static void insertUserSkill(int userId, int skillId) throws Exception {
+        String sql = "INSERT INTO user_skills (user_id, skill_id) VALUES (" + userId + ", '" + skillId + "')";
+
+        try (Connection conn = DatabaseUtil.getConnection(); Statement stmt = conn.createStatement()) {
+            stmt.executeUpdate(sql);
         }
     }
 
@@ -56,8 +68,8 @@ public class UserService extends User{
                 user.setId(resultSet.getInt("id"));
                 user.setName(resultSet.getString("name"));
                 user.setEmail(resultSet.getString("email"));
-                user.setSkills(resultSet.getString("skills"));
-                user.setInterests(resultSet.getString("interests"));
+              //  user.setSkills(resultSet.getString("skills"));
+                //user.setInterests(resultSet.getString("interests"));
                 user.setPersonalityTraits(resultSet.getString("personality_traits"));
             }
         } catch (SQLException e) {
