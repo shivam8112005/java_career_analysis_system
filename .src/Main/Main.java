@@ -88,7 +88,7 @@ public class Main {
             System.out.println("Name: " + user.getName());
             System.out.println("Email: " + user.getEmail());
             System.out.println("Skills: " + user.getSkills());
-            System.out.println("Interests: " + user.getInterests());
+           // System.out.println("Interests: " + user.getInterests());
             System.out.println("Personality Traits: " + user.getPersonalityTraits());
         } else {
             System.out.println("User not found.");
@@ -122,7 +122,7 @@ public class Main {
             System.out.println("Name: " + user.getName());
             System.out.println("Email: " + user.getEmail());
             System.out.println("Skills: " + user.getSkills());
-            System.out.println("Interests: " + user.getInterests());
+           // System.out.println("Interests: " + user.getInterests());
             System.out.println("Personality Traits: " + user.getPersonalityTraits());
         } else {
             System.out.println("User not found.");

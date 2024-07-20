@@ -43,8 +43,11 @@ public class UserService extends User{
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        for(int i=0;i<user.skills.size();i++){
-            insertUserSkill(user.getId(), user.skills.get(i).getSkillId());
+        insert(user);
+    }
+    public static void insert(User user) throws Exception{
+        for(Skill skill:user.skills){
+            insertUserSkill(user.getId(), skill.getSkillId());
         }
         
     }

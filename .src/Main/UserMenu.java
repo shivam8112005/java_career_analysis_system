@@ -73,7 +73,7 @@ public class UserMenu extends User {
             String password=sc.next();
             if(password.equals(User.getUserByEmail(input).getPassword())){
                 u=User.getUserByEmail(input);
-                userMenu();
+                userMenu(u);
                 break;
             }else{
                System.out.println("pasword incorrect!");
@@ -97,7 +97,7 @@ public class UserMenu extends User {
        if(!b){
         if(choice==1){
             createUser(input);
-            userMenu();
+            userMenu(u);
         }
         else{
             System.out.println("User Not found!");
@@ -105,16 +105,15 @@ public class UserMenu extends User {
         String ch=sc.next();
         if(ch.equalsIgnoreCase("y")){
            createUser(input);
-           userMenu();
+           userMenu(u);
         }
         }
        }
     }
-    //************************************************** also take educational details of user */
+    
     private  void createUser(String email) throws Exception{
         this.u = new User();
         setPassword(u);
-        System.out.println("jfberiughiuehgernig   1");
         System.out.print("Enter name: ");
         sc.nextLine();
         String name = sc.nextLine();
@@ -122,60 +121,49 @@ public class UserMenu extends User {
         String edu=sc.nextLine();
         System.out.print("Enter Location: ");
         String location=sc.nextLine();
-        System.out.println("fk.ewljfejrog e22 222");
         userService.personalityAssessment(u.pt,  this.u);
         u.pt++;
         u.setName(name);
         u.setEmail(email);
-        u.setSkill();
+        u.setSkill(u);
         u.setLocation(location);
        u.setEducation(edu);
         userService.addUser(u,email);
         System.out.println("User created and signed in successfully.");
     }
-    public void userMenu() throws Exception{
+    public void userMenu(User u) throws Exception{
        
         boolean exit=true;
         while (exit) {
             System.out.println("Career Analysis System");
-            System.out.println("1. Sign In");
-            System.out.println("2. Add Career");
-            System.out.println("3. Get User by Email");
-            System.out.println("4. Get Career by ID");
-            System.out.println("5. Log out");
-            System.out.println("6. Career Matching");
-            System.out.println("7. assessments");
-            System.out.println("8. Result Log");
+           System.out.println("1. Profile");
+           System.out.println("2. Assessments");
+           System.out.println("3. Career Matching");
+           System.out.println("4. Search User");
+           System.out.println("5. Log out");
             System.out.print("Choose an option: ");
           int choice=sc.nextInt();
             
            
             switch (choice) {
                 case 1:
-                    //signIn();
+                    profile(u);
                     break;
                 case 2:
-                   // addCareer();
+                   assessments();
                     break;
                 case 3:
-                  //  getUserByEmail();
+                userService.interestProfiling();
                     break;
                 case 4:
-                   // getCareerById();
+                   
                     break;
+
                 case 5:
                 System.out.println("Logged out successfully.");
                 exit=false;
                     break;
-                case 6:
-                userService.interestProfiling();
-                break;
-                case 7:
-                assessments();
-                break;
-                case 8:
-                
-                break;
+               
                 default:
                     System.out.println("Invalid option. Try again.");
             }
