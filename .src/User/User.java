@@ -22,6 +22,8 @@ public class User {
     private String location;
     private String education;
     private String personalityTraits;
+    ArrayList<String> skillAssessmentResultLog=new ArrayList<>();
+    HashMap<String,String> personalityAssessmentResultLog=new HashMap<>();
     public static HashMap<String,User> users=new HashMap<>();
     public HashSet<Skill> skills=new HashSet<>();
      public int getId() {
@@ -283,13 +285,21 @@ public void setPassword(User u) {
         int num=sc.nextInt();
         int[] arr=new int[num];
         System.out.print("Enter Id of Skills You want Add: ");
+        String querry2="SELECT user_id  FROM user_skills WHERE user_id = ? AND skill_id= ?";
+        PreparedStatement pst1=DatabaseUtil.getConnection().prepareStatement(querry2);
+        pst1.setInt(1, u.getId());
         for(int j=0;j<num;j++){
             int num1=sc.nextInt();
            while(num1<7 || num1>31){
             System.out.println("Enter valid Id !");
             num1=sc.nextInt();
+           }pst1.setInt(2, num1);
+           ResultSet rs1=pst1.executeQuery();
+           if(!rs1.next()){
+            UserService.insertUserSkill(u.getId(),num1);
+            arr[j]=num1;
            }
-           arr[j]=num1;
+           
         }   
         String querry1="SELECT skill_name FROM skills WHERE id = ?";
         PreparedStatement pst=DatabaseUtil.getConnection().prepareStatement(querry1);
@@ -300,6 +310,7 @@ public void setPassword(User u) {
                 u.skills.add(new Skill(arr[k], rs1.getString("skill_name")));
             }
         } 
+        
     }
     //***********************************************remove skills and interest from user table and create interest table which 
     //is link with user like skills table take every input by id like (menu type) */
@@ -314,7 +325,6 @@ public void setPassword(User u) {
         switch (c) {
             case 1:
             setSkill(u);
-            UserService.insert(u);
                 break;
         
             case 2:
@@ -383,7 +393,7 @@ public void setPassword(User u) {
         }if(sum==0){
             System.out.println("You already dont have this skills ! ");
         }
-        if(sum==arr.length){
+        else if(sum==arr.length){
             System.out.println("Skills Removed successfully. ");
         }else{
             System.out.println("Removed available skills.");

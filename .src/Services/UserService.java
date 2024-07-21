@@ -9,8 +9,7 @@ import java.util.HashMap;
 import java.util.Scanner;
 public class UserService extends User{
     static HashMap<String, String> recommendations = new HashMap<>();
-    ArrayList<String> skillAssessmentResultLog=new ArrayList<>();
-    HashMap<String,String> personalityAssessmentResultLog=new HashMap<>();
+    
     
     int Prog_skills_marks=0;
     int Sys_and_Net_marks=0;
@@ -43,14 +42,9 @@ public class UserService extends User{
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        insert(user);
-    }
-    public static void insert(User user) throws Exception{
-        for(Skill skill:user.skills){
-            insertUserSkill(user.getId(), skill.getSkillId());
-        }
         
     }
+    
     public static void insertUserSkill(int userId, int skillId) throws Exception {
         String sql = "INSERT INTO user_skills (user_id, skill_id) VALUES (" + userId + ", '" + skillId + "')";
 
@@ -401,8 +395,8 @@ public class UserService extends User{
 
 
 
-public void personalityAssessment(int x, User a) {
-    if(x!=1){
+public void personalityAssessment( User a) {
+    if(a.pt!=1){
         System.out.println("This test will affect Your Profile's Personality Traits Section !");
         System.out.println("Want to continue ? (y/n): ");
         String s=sc.next();
@@ -463,20 +457,23 @@ public void personalityAssessment(int x, User a) {
     // Display the result
     String s="";
     a.setPersonalityTraits(TRAITS[maxScoreIndex]);
+    if(a.pt!=1){
+        DatabaseUtil.updatingPersonalityTraits(TRAITS[maxScoreIndex], a.getId());
+    }
     System.out.println("Your dominant trait is: " + TRAITS[maxScoreIndex]);
     System.out.println("Based on your personality, you might enjoy careers such as:");
     for (String career : CAREERS[maxScoreIndex]) {
         System.out.println("- " + career);
         s+="- "+career;
     }
-    personalityAssessmentResultLog.put(TRAITS[maxScoreIndex], s);
+    a.personalityAssessmentResultLog.put(TRAITS[maxScoreIndex], s);
 //scanner.nextLine();
   //  scanner.close();
 }
-public void personalityAssessmentResultLog(){
+public void personalityAssessmentResultLog(User a){
     System.out.println("ResultLog: ");
     int i=1;
-    for(String s: personalityAssessmentResultLog.keySet()){
+    for(String s: a.personalityAssessmentResultLog.keySet()){
         System.out.println(i+". "+s+" - "+personalityAssessmentResultLog.get(s));
         i++;
     }

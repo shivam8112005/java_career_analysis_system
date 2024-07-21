@@ -69,10 +69,12 @@ public class UserMenu extends User {
                 System.out.println("Email already exists!");
             }else{
             while(true){
-            System.out.println("enter password: ");
+            System.out.print("enter password: ");
             String password=sc.next();
             if(password.equals(User.getUserByEmail(input).getPassword())){
                 u=User.getUserByEmail(input);
+                u.pt++;
+                System.out.println();
                 userMenu(u);
                 break;
             }else{
@@ -121,14 +123,14 @@ public class UserMenu extends User {
         String edu=sc.nextLine();
         System.out.print("Enter Location: ");
         String location=sc.nextLine();
-        userService.personalityAssessment(u.pt,  this.u);
+        userService.personalityAssessment(this.u);
         u.pt++;
         u.setName(name);
         u.setEmail(email);
-        u.setSkill(u);
         u.setLocation(location);
-       u.setEducation(edu);
+        u.setEducation(edu);
         userService.addUser(u,email);
+        u.setSkill(u);
         System.out.println("User created and signed in successfully.");
     }
     public void userMenu(User u) throws Exception{
@@ -179,8 +181,8 @@ public class UserMenu extends User {
             userService.skillAssessment();
                 break;
             case 2:
-            userService.personalityAssessment(pt,u);
-            pt++;
+            userService.personalityAssessment(u);
+            u.pt++;
                 break;    
             case 3:
             System.out.println("1. skilled Assessment resultlog");
@@ -189,10 +191,13 @@ public class UserMenu extends User {
             if(c==1){
                 userService.printResultLog();
             }else if(c==2){
-                userService.personalityAssessmentResultLog();
+                userService.personalityAssessmentResultLog(u);
             }else{
                 System.out.println("Invalid option. Try again.");
             }
+                break;
+
+                default:System.out.println("Invalid Input !");
                 break;
         }
     }
