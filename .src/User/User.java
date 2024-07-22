@@ -8,8 +8,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Scanner;
-
-
 import java.sql.Statement;
 import java.sql.CallableStatement;
 public class User {
@@ -22,10 +20,10 @@ public class User {
     private String location;
     private String education;
     private String personalityTraits;
-    ArrayList<String> skillAssessmentResultLog=new ArrayList<>();
-    HashMap<String,String> personalityAssessmentResultLog=new HashMap<>();
+    Stack<String> skillAssessmentResultLog=new Stack<>();
+    Stack<String>  personalityAssessmentResultLog=new Stack<>();
     public static HashMap<String,User> users=new HashMap<>();
-    public HashSet<Skill> skills=new HashSet<>();
+    public Queue<Skill> skills=new Queue<>();
      public int getId() {
          return id;
      }
@@ -48,12 +46,12 @@ public class User {
         this.location = location;
     }
 
-public void setPassword(User u) {
+public void setPassword() {
         while (true) {
             System.out.print("Enter password (minimum 8 characters, must include letters and digits): ");
             String input = sc.nextLine();
             if (isValidPassword(input)) {
-                u.password = input;
+                this.password = input;
                 break;
             }
             System.out.println("Invalid password. Please re-enter the password.");
@@ -81,7 +79,7 @@ public void setPassword(User u) {
          this.email = email;
      }
 
-     public HashSet<Skill> getSkills() {
+     public Queue<Skill> getSkills() {
          return skills;
      }
 
@@ -151,9 +149,10 @@ public void setPassword(User u) {
         }
         return false;
     }
-    public void profile(User u) throws Exception{
+    public void profile( ) throws Exception{
        boolean exit=true;
        while(exit){
+        System.out.println("=================================== Profile =================================");
         System.out.println("1. View Details");
         System.out.println("2. Edit Name");
         System.out.println("3. Edit password");
@@ -164,25 +163,25 @@ public void setPassword(User u) {
         System.out.println("8. Return");
         int choice=sc.nextInt();
         switch(choice){
-            case 1:viewDetails(u);
+            case 1:viewDetails();
             break;
 
-            case 2:editName(u);
+            case 2:editName();
             break;
 
-            case 3:editPassword(u);
+            case 3:editPassword();
             break;
 
-            case 4:editEmail(u);
+            case 4:editEmail();
             break;
 
-            case 5:editSkills(u);
+            case 5:editSkills();
             break;
 
-            case 6:editLocation(u);
+            case 6:editLocation();
             break;
 
-            case 7:editEducation(u);
+            case 7:editEducation();
             break;
 
             case 8:exit=false;
@@ -193,20 +192,26 @@ public void setPassword(User u) {
         }
        }
     }
-    public void viewDetails(User u){
-        System.out.println("Personal Details: ");
-        System.out.println(u.toString());
-        System.out.println("Skills");
-        viewSkills(u);
+    public void viewDetails( ){
+        System.out.println("----------------------------- Personal Details -------------------------------");
+        System.out.println("User Id: "+this.getId());
+        System.out.println("Name: "+this.getName());
+        System.out.println("Email: "+this.getEmail());
+        System.out.println("Location: "+this.getLocation());
+        System.out.println("Education: "+this.getEducation());
+        System.out.println("Personality Trait: "+this.getPersonalityTraits());
+        System.out.println("---------------------------------- Skills --------------------------------------");
+        viewSkills();
     }
-    public void editName(User u) throws Exception{
+    public void editName() throws Exception{
+        System.out.println("---------------------------------- Edit Name -------------------------------");
         System.out.print("Enter new Name: ");
         sc.nextLine();
-        u.name=sc.nextLine();
+        this.name=sc.nextLine();
         String querry="{call nameupdation(?,?)}";
         CallableStatement cst=DatabaseUtil.getConnection().prepareCall(querry);
-        cst.setString(1, u.name);
-        cst.setString(2, u.email);
+        cst.setString(1, this.name);
+        cst.setString(2, this.email);
        boolean b= cst.execute();
         if(!b){
             System.out.println("Name Updated Successfully.");
@@ -214,18 +219,19 @@ public void setPassword(User u) {
             System.out.println("Name not updated !");
         }
     }
-    public void editPassword(User u) throws Exception{
+    public void editPassword() throws Exception{
+        System.out.println("---------------------------------- Edit Password ----------------------------------");
         System.out.print("Enter email: ");
         String email=sc.next();
         System.out.println();
         if(isValidEmail(email)){
-            if(email.equals(u.email)){
+            if(email.equals(this.email)){
                 System.out.print("Enter New Password: ");
-                setPassword(u);
+                setPassword();
                 String querry="{call passupdation(?,?)}";
                 CallableStatement cst=DatabaseUtil.getConnection().prepareCall(querry);
-                cst.setString(1, u.password);
-                cst.setString(2, u.email);
+                cst.setString(1, this.password);
+                cst.setString(2, this.email);
                 boolean b=cst.execute();
                 if(!b){
                     System.out.println("Password Updated Successfully.");
@@ -239,11 +245,12 @@ public void setPassword(User u) {
             System.out.println("Enter valid Email !");
         }
     }
-    public void editEmail(User u) throws Exception{
+    public void editEmail() throws Exception{
+        System.out.println("-------------------------------------- Edit Email ----------------------------------");
         System.out.print("Enter your Id: ");
         int id=sc.nextInt();
         System.out.println();
-        if(id==u.id){
+        if(id==this.id){
             System.out.print("Enter New Email: ");
             String email=sc.next();
            if(isValidEmail(email)){
@@ -254,10 +261,10 @@ public void setPassword(User u) {
             if(rs.next()){
                 System.out.println("Email already exists ! ");
             }else{
-                u.email=email;
+                this.email=email;
                 String querry1="{call emailupdation(?,?)}";
                 CallableStatement cst=DatabaseUtil.getConnection().prepareCall(querry1);
-                cst.setInt(1, u.id);
+                cst.setInt(1, this.id);
                 cst.setString(2, email);
                 boolean b=cst.execute();
                 if(!b){
@@ -270,7 +277,7 @@ public void setPassword(User u) {
             System.out.println("Email Invalid ! ");
            }
         }
-    }public void setSkill(User u) throws Exception{
+    }public void setSkill() throws Exception{
         String querry="SELECT * FROM skills";
         Statement st=DatabaseUtil.getConnection().createStatement();
         ResultSet rs=st.executeQuery(querry);
@@ -287,7 +294,7 @@ public void setPassword(User u) {
         System.out.print("Enter Id of Skills You want Add: ");
         String querry2="SELECT user_id  FROM user_skills WHERE user_id = ? AND skill_id= ?";
         PreparedStatement pst1=DatabaseUtil.getConnection().prepareStatement(querry2);
-        pst1.setInt(1, u.getId());
+        pst1.setInt(1, this.getId());
         for(int j=0;j<num;j++){
             int num1=sc.nextInt();
            while(num1<7 || num1>31){
@@ -296,7 +303,7 @@ public void setPassword(User u) {
            }pst1.setInt(2, num1);
            ResultSet rs1=pst1.executeQuery();
            if(!rs1.next()){
-            UserService.insertUserSkill(u.getId(),num1);
+            UserService.insertUserSkill(this.getId(),num1);
             arr[j]=num1;
            }
            
@@ -307,16 +314,17 @@ public void setPassword(User u) {
             pst.setInt(1, arr[k]);
             ResultSet rs1=pst.executeQuery();
             if(rs1.next()){
-                u.skills.add(new Skill(arr[k], rs1.getString("skill_name")));
+                this.skills.enqueue(new Skill(arr[k], rs1.getString("skill_name")));
             }
         } 
         
     }
     //***********************************************remove skills and interest from user table and create interest table which 
     //is link with user like skills table take every input by id like (menu type) */
-    public void editSkills(User u) throws Exception{
+    public void editSkills( ) throws Exception{
         boolean exit=true;
         while(exit){
+            System.out.println("-------------------------------------- Edit Skills ------------------------------------");
         System.out.println("1. Add Skills");
         System.out.println("2. Remove Skills");
         System.out.println("3. View Skills");
@@ -324,15 +332,18 @@ public void setPassword(User u) {
         int c=sc.nextInt();
         switch (c) {
             case 1:
-            setSkill(u);
+            System.out.println("----------------------------------- Add Skills --------------------------------");
+            setSkill();
                 break;
         
             case 2:
-            removeSkills(u);
+            System.out.println("------------------------------------- Remove Skills ---------------------------------");
+            removeSkills();
                 break;
 
             case 3:
-            viewSkills(u);
+            System.out.println("------------------------------- Skills ----------------------------------");
+            viewSkills();
             break;
             
             case 4:exit=false;
@@ -345,25 +356,27 @@ public void setPassword(User u) {
     }
         
     }
-    public void viewSkills(User u){
-        
-        int i=0;
-        for(Skill skill:u.skills){
-            if(i%3==0 && i!=0){
-            System.out.println();
-        }System.out.print(skill.toString()+"  ");
-        i++;
-        }
-        System.out.println();
-    }
-    public void removeSkills(User u) throws Exception{
-        int i=0;
-       for(Skill skill:u.skills){
-            if(i%4==0 && i!=0){
+    public void viewSkills(){
+        //System.out.println("jdsfbhewuhfu 11111");
+        int i=1;
+        Node<Skill> current = this.skills.list.head;
+        while (current != null) {
+           // System.out.println("dfjioerhfioe 222222");
+            if(i%3==0){
                 System.out.println();
-            }System.out.println(skill.toString()+"  ");
+               // System.out.println("dsjfhiuewhioewh 3333333");
+            }//System.out.println("jdbsfuewhjnrkjnf 44444");
+            System.out.print(i+". "+current.data.toString() + "  ");
+           // System.out.println("liefjioewjfew fjejf 5555555");
+            current = current.next;
             i++;
         }
+        System.out.println();
+      
+    }
+    public void removeSkills() throws Exception{
+        System.out.println("------------------------------------ Your Skills ----------------------------------");
+       viewSkills();
         System.out.print("Enter Number of skills you want to delete: ");
         int num=sc.nextInt();
         String querry="DELETE FROM user_skills WHERE user_id= ? AND skill_id= ?";
@@ -375,14 +388,15 @@ public void setPassword(User u) {
             System.out.println("Enter valid Id !");
             num1=sc.nextInt();
            }
-           Iterator<Skill> iterator = u.skills.iterator();
-           while (iterator.hasNext()) {
-            Skill s = iterator.next();
-            if (s.getSkillId()==num1) {
-                iterator.remove(); // Safe removal
+           Node<Skill> current = this.skills.list.head;
+
+         while (current != null) {
+            if(current.data.skillId==num1){
+                this.skills.list.remove(current.data);
             }
-        }
-          pst.setInt(1, u.id);
+            current=current.next;
+         }
+          pst.setInt(1, this.id);
           pst.setInt(2, num1);
            pst.addBatch();
         }
@@ -400,27 +414,29 @@ public void setPassword(User u) {
         }
         
     }
-    public void editLocation(User u) throws Exception{
+    public void editLocation( ) throws Exception{
+        System.out.println("---------------------------------- Edit Location ---------------------------------");
         System.out.print("Enter new Location: ");
         sc.nextLine();
         String loc=sc.nextLine();
         setLocation(loc);
         String querry="UPDATE users SET location = ? WHERE email= ?";
         PreparedStatement pst=DatabaseUtil.getConnection().prepareStatement(querry);
-        pst.setString(1, u.location);
-        pst.setString(2, u.email);
+        pst.setString(1, this.location);
+        pst.setString(2, this.email);
         pst.executeUpdate();
         System.out.println();
     }
-    public void editEducation(User u) throws Exception{
+    public void editEducation( ) throws Exception{
+        System.out.println("------------------------------------- Edit Education ----------------------------------");
         System.out.print("Enter new Education: ");
         sc.nextLine();
         String edu=sc.nextLine();
         setEducation(edu);
         String querry="UPDATE users SET education = ? WHERE email= ?";
         PreparedStatement pst=DatabaseUtil.getConnection().prepareStatement(querry);
-        pst.setString(1, u.education);
-        pst.setString(2, u.email);
+        pst.setString(1, this.education);
+        pst.setString(2, this.email);
         pst.executeUpdate();
         System.out.println();
     }

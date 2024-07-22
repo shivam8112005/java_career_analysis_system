@@ -79,6 +79,7 @@ public class UserService extends User{
 
     // Other methods for skill assessment, interest profiling, etc.
     public void skillAssessment(User a){
+        System.out.println("============================== Skilled Assessment ===============================");
                  String[][] questions = {
                          {"1. Which of the following is a programming language?",
                                  "A. HTML",
@@ -226,23 +227,28 @@ public class UserService extends User{
                      cnt++;
                      System.out.println();
                  }
-                 System.out.println("Result: ");
+                 System.out.println("------------------------------------- Result -----------------------------------");
                  System.out.println("Programming Skills: "+Prog_skills_marks+"/5  Systems and Networking: "+Sys_and_Net_marks
                  +"/5   Software Development Practices: "+sw_dev_marks+"/5  Hardware and Embedded Systems: "+hw_embeded_sys_marks
                  +"/5");
-                 a.skillAssessmentResultLog.add("Programming Skills: "+Prog_skills_marks+"/5  Systems and Networking: "+Sys_and_Net_marks
+                 a.skillAssessmentResultLog.push("Programming Skills: "+Prog_skills_marks+"/5  Systems and Networking: "+Sys_and_Net_marks
                  +"/5   Software Development Practices: "+sw_dev_marks+"/5  Hardware and Embedded Systems: "+hw_embeded_sys_marks
                  +"/5");
                  generateEvaluationStatements(Prog_skills_marks, Sys_and_Net_marks, sw_dev_marks, hw_embeded_sys_marks);
                  DatabaseUtil.updatingSkillAssessmentResultLog(a, Prog_skills_marks, Sys_and_Net_marks, sw_dev_marks, hw_embeded_sys_marks);
                  }
-                 public void printResultLog(){
-                    System.out.println("Result Log:");
-                    int i=1;
-                    for(String s:skillAssessmentResultLog){
-                        System.out.println(i+". "+s);
-                        i++;
-                    }
+                 public void printResultLog(User a){
+                if(a.skillAssessmentResultLog.isEmpty()){
+                    System.out.println("No Skilled Assessment Attempted.");
+                    return;
+                }
+                   Node<String> current=a.skillAssessmentResultLog.list.head;
+                   int i=1;
+                   while(current!=null){
+                    System.out.println(i+". "+current.data);
+                    current=current.next;
+                    i++;
+                   }
                  }
                  public static void generateEvaluationStatements(int prog, int sys, int swDev, int hw) {
                     StringBuilder strengths = new StringBuilder("Strengths: ");
@@ -281,6 +287,7 @@ public class UserService extends User{
                     System.out.println();
     }
     public void interestProfiling(){
+        System.out.println("============================= Career Matching ==============================");
         int passion;
         int interest;
         System.out.println("choose any one Interest of the following:");
@@ -358,12 +365,14 @@ public class UserService extends User{
             }else if(passion==7){
                 recomendation1+="Automation";
             }
-            System.out.println("Based on your choices, here are some recommendations:");
+            System.out.println("----------------------------------------------------------------------------------------");
+            System.out.println("Based on your choices, here are some recommendations: ");
             System.out.println("Interest: " + getInterestDescription(interest));
             System.out.println("Passion: " + getPassionDescription(passion));
             System.out.println("Recommendation: " + recomendation1);
         }else{
-            System.out.println("Based on your choices, here are some recommendations:");
+            System.out.println("-----------------------------------------------------------------------------------------");
+            System.out.println("Based on your choices, here are some recommendations: ");
         System.out.println("Interest: " + getInterestDescription(interest));
         System.out.println("Passion: " + getPassionDescription(passion));
         System.out.println("Recommendation: " + recommendation);
@@ -406,7 +415,7 @@ public void personalityAssessment( User a) {
         }
     }
    
-    System.out.println("Personality Assessment: ");
+    System.out.println("=================================== Personality Assessment ======================================");
     // Questions for the personality test
    String[] QUESTIONS = {
     "I enjoy analyzing complex problems to find efficient solutions.",
@@ -444,6 +453,10 @@ public void personalityAssessment( User a) {
         System.out.println(QUESTIONS[i]);
         System.out.print("Rate your agreement (1-5): ");
         int response = scanner.nextInt();
+        while(response<1 || response>5){
+            System.out.println("Enter Valid Input !");
+            response=scanner.nextInt();
+        }
         scores[i] = response;
     }
 
@@ -461,6 +474,7 @@ public void personalityAssessment( User a) {
    
     if(a.pt!=1){
         DatabaseUtil.updatingPersonalityTraits(TRAITS[maxScoreIndex], a.getId());
+        System.out.println("----------------------------------------------------------------------------------------");
         System.out.println("Your dominant trait is: " + TRAITS[maxScoreIndex]);
         System.out.println("Based on your personality, you might enjoy careers such as:");
         DatabaseUtil.updatingPersonalityTraitsResultLog(a);
@@ -470,17 +484,23 @@ public void personalityAssessment( User a) {
         }
     }
    
-    a.personalityAssessmentResultLog.put(TRAITS[maxScoreIndex], s);
+    a.personalityAssessmentResultLog.push(TRAITS[maxScoreIndex]+" : - "+s);
 //scanner.nextLine();
   //  scanner.close();
 }
 public void personalityAssessmentResultLog(User a){
-    System.out.println("ResultLog: ");
-    int i=1;
-    for(String s: a.personalityAssessmentResultLog.keySet()){
-        System.out.println(i+". "+s+" - "+personalityAssessmentResultLog.get(s));
-        i++;
+    if(a.personalityAssessmentResultLog.isEmpty()){
+        System.out.println("No personality Assessment Atempted.");
+        return;
     }
+                   Node<String> current=a.personalityAssessmentResultLog.list.head;
+                   int i=1;
+                   while(current!=null){
+                    System.out.println(i+". "+current.data);
+                    current=current.next;
+                    i++;
+                
+                   }
 }
 
 
