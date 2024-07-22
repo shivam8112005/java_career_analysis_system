@@ -22,7 +22,7 @@ public class Skill {
     }
     @Override
     public String toString() {
-        return "skills [skill=" + skill + ", skillId=" + skillId + "]";
+        return "Skill Name=" + skill + ", Skill Id=" + skillId;
     }
     
 }

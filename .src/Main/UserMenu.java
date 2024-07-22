@@ -10,22 +10,20 @@ public class UserMenu extends User {
         boolean exit = true;
         
         while (exit) {
-            System.out.println();
-            System.out.println("User Menu:");
+            System.out.println("================================== User Menu ==================================");
             System.out.println("1. Sign Up");
             System.out.println("2. Login");
             System.out.println("3. Return");
 
             System.out.print("Enter your choice: ");
              choice = sc.nextInt();
-            
-
             switch (choice) {
                 case 1:
-                System.out.println("Sign Up: ");
+                System.out.println("================================== Sign Up =============================");
                    customerLogIn();
                     break;
                 case 2:
+                System.out.println("============================== Log In ===============================");
                 System.out.println("Log In: ");
                    customerLogIn();
                     break;
@@ -74,7 +72,10 @@ public class UserMenu extends User {
             if(password.equals(User.getUserByEmail(input).getPassword())){
                 u=User.getUserByEmail(input);
                 u.pt++;
-                System.out.println();
+                System.out.println("---------------------------------- Welcome Again! ---------------------------------------");
+                DatabaseUtil.copySkills(u);
+                DatabaseUtil.copyPtResultLog(u);
+                DatabaseUtil.copySkillResultLog(u);
                 userMenu(u);
                 break;
             }else{
@@ -85,7 +86,7 @@ public class UserMenu extends User {
                 System.out.println("Enter UserId: ");
                 int userid=sc.nextInt();
                 if(userid==User.getUserByEmail(input).getId()){
-                   setPassword(u);
+                   setPassword();
                    System.out.println("Password Updated successfully");
                    break;
                 }else{
@@ -115,7 +116,7 @@ public class UserMenu extends User {
     
     private  void createUser(String email) throws Exception{
         this.u = new User();
-        setPassword(u);
+        u.setPassword();
         System.out.print("Enter name: ");
         sc.nextLine();
         String name = sc.nextLine();
@@ -123,6 +124,7 @@ public class UserMenu extends User {
         String edu=sc.nextLine();
         System.out.print("Enter Location: ");
         String location=sc.nextLine();
+        System.out.println();
         userService.personalityAssessment(this.u);
         u.pt++;
         u.setName(name);
@@ -131,14 +133,15 @@ public class UserMenu extends User {
         u.setEducation(edu);
         userService.addUser(u,email);
         DatabaseUtil.updatingPersonalityTraitsResultLog(u);
-        u.setSkill(u);
+        System.out.println("--------------------------------- Set Your Skills -------------------------------");
+        u.setSkill();
         System.out.println("User created and signed in successfully.");
     }
     public void userMenu(User u) throws Exception{
        
         boolean exit=true;
         while (exit) {
-            System.out.println("Career Analysis System");
+            System.out.println("============================== Career Analysis System ===================================");
            System.out.println("1. Profile");
            System.out.println("2. Assessments");
            System.out.println("3. Career Matching");
@@ -150,7 +153,7 @@ public class UserMenu extends User {
            
             switch (choice) {
                 case 1:
-                    profile(u);
+                    u.profile();
                     break;
                 case 2:
                    assessments();
@@ -173,9 +176,13 @@ public class UserMenu extends User {
         }
     }
     public void assessments(){
+        boolean exit=true;
+        while(exit){
+            System.out.println("==================================== Assessments ================================");
         System.out.println("1. Skilled Assessment");
         System.out.println("2. Personality Assessment");
         System.out.println("3. ResultLog");
+        System.out.println("4. Return");
         int choice=sc.nextInt();
         switch (choice) {
             case 1:
@@ -186,23 +193,28 @@ public class UserMenu extends User {
             u.pt++;
                 break;    
             case 3:
+            System.out.println("================================= Result Logs =================================");
             System.out.println("1. skilled Assessment resultlog");
             System.out.println("2. Personality Assessment Resultlog");
             int c=sc.nextInt();
             if(c==1){
-                System.out.println("Skilled Assessment Result History");
-                DatabaseUtil.getSkillResultLog(u);
+                System.out.println("=============================== Skilled Assessment Result History =================================");
+                userService.printResultLog(u);
             }else if(c==2){
-                System.out.println("Personality Assessment Result History");
-                DatabaseUtil.getPersonalityTraitsResultLog(u);
+                System.out.println("============================== Personality Assessment Result History ================================");
+               userService.personalityAssessmentResultLog(u);
             }else{
                 System.out.println("Invalid option. Try again.");
             }
+                break;
+                
+                case 4:exit=false;
                 break;
 
                 default:System.out.println("Invalid Input !");
                 break;
         }
+    }
     }
    
 }
