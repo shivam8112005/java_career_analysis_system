@@ -130,6 +130,7 @@ public class UserMenu extends User {
         u.setLocation(location);
         u.setEducation(edu);
         userService.addUser(u,email);
+        DatabaseUtil.updatingPersonalityTraitsResultLog(u);
         u.setSkill(u);
         System.out.println("User created and signed in successfully.");
     }
@@ -178,7 +179,7 @@ public class UserMenu extends User {
         int choice=sc.nextInt();
         switch (choice) {
             case 1:
-            userService.skillAssessment();
+            userService.skillAssessment(u);
                 break;
             case 2:
             userService.personalityAssessment(u);
@@ -189,9 +190,11 @@ public class UserMenu extends User {
             System.out.println("2. Personality Assessment Resultlog");
             int c=sc.nextInt();
             if(c==1){
-                userService.printResultLog();
+                System.out.println("Skilled Assessment Result History");
+                DatabaseUtil.getSkillResultLog(u);
             }else if(c==2){
-                userService.personalityAssessmentResultLog(u);
+                System.out.println("Personality Assessment Result History");
+                DatabaseUtil.getPersonalityTraitsResultLog(u);
             }else{
                 System.out.println("Invalid option. Try again.");
             }

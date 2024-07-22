@@ -46,7 +46,7 @@ public class Main {
                 userService.interestProfiling();
                 break;
                 case 7:
-                userService.skillAssessment();
+               // userService.skillAssessment();
                 break;
                 case 8:
                 userService.printResultLog();
