@@ -1,6 +1,12 @@
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Timestamp;
+import java.time.Instant;
+
+import com.mysql.cj.protocol.Resultset;
 
 public class DatabaseUtil {
     private static final String URL = "jdbc:mysql://localhost:3306/career_analysis_system";
@@ -27,6 +33,76 @@ public class DatabaseUtil {
         System.out.println(e.getMessage());
        }
         
+    }
+    //personalityresultlog
+    public static void updatingPersonalityTraitsResultLog(User a){
+        String querry="INSERT INTO personalityresultlog(user_id, date, personality_traits) VALUES (?, ?, ?)";
+        try {
+            PreparedStatement pst=getConnection().prepareStatement(querry);
+            pst.setInt(1, a.getId());
+            Timestamp eventTime = Timestamp.from(Instant.now());
+            pst.setTimestamp(2,eventTime );
+            pst.setString(3, a.getPersonalityTraits());
+            pst.executeUpdate();
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        
+    }
+    public static void updatingSkillAssessmentResultLog(User a,int ps,int sn,int sd,int hd){
+        String querry="INSERT INTO skillresultlog(user_id, date, programming_skills_out_of_5, systems_and_networking_out_of_5, software_development_out_of_5, hardware_and_embedded_systems_out_of_5) VALUES (?, ?, ?, ?, ?, ?)";
+        try {
+            PreparedStatement pst=getConnection().prepareStatement(querry);
+            pst.setInt(1, a.getId());
+            Timestamp eventTime = Timestamp.from(Instant.now());
+            pst.setTimestamp(2,eventTime );
+            pst.setInt(3, ps);
+            pst.setInt(4, sn);
+            pst.setInt(5, sd);
+            pst.setInt(6, hd);
+            pst.executeUpdate();
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        
+    }
+    public static void getPersonalityTraitsResultLog(User a){
+        String querry="SELECT * FROM personalityresultlog WHERE user_id = ?";
+       try{
+        PreparedStatement pst=getConnection().prepareStatement(querry);
+        pst.setInt(1, a.getId());
+        ResultSet rs=pst.executeQuery();
+        int i=1;
+        while(rs.next()){
+            System.out.println(i+".  Date/Time: "+rs.getTimestamp("date")+"  Personality Trait: "+rs.getString("personality_traits"));
+            i++;
+        }
+       }catch(Exception e){
+        System.out.println(e.getMessage());
+       }
+    }
+    public static void getSkillResultLog(User a){
+        String querry="SELECT * FROM skillresultlog WHERE user_id = ?";
+        try{
+         PreparedStatement pst=getConnection().prepareStatement(querry);
+         pst.setInt(1, a.getId());
+         ResultSet rs=pst.executeQuery();
+         int i=1;
+         if(!rs.next()){
+            System.out.println("No Skills Assessment Attempted.");
+            return;
+         }
+         while(rs.next()){
+             System.out.println(i+".  Date/Time: "+rs.getTimestamp("date")+"  Programming Skills: "+rs.getInt("programming_skills_out_of_5")+"/5  Systems and Networking: "+
+             rs.getInt("systems_and_networking_out_of_5")+"/5  Software Devlopment: "+rs.getInt("software_development_out_of_5")+"/5  Hardware and Embedded System: "+
+             rs.getInt("hardware_and_embedded_systems_out_of_5")+"/5");
+             i++;
+         }
+        }catch(Exception e){
+         System.out.println(e.getMessage());
+        }
     }
    
 }

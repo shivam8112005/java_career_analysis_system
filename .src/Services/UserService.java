@@ -78,7 +78,7 @@ public class UserService extends User{
 
 
     // Other methods for skill assessment, interest profiling, etc.
-    public void skillAssessment(){
+    public void skillAssessment(User a){
                  String[][] questions = {
                          {"1. Which of the following is a programming language?",
                                  "A. HTML",
@@ -230,10 +230,11 @@ public class UserService extends User{
                  System.out.println("Programming Skills: "+Prog_skills_marks+"/5  Systems and Networking: "+Sys_and_Net_marks
                  +"/5   Software Development Practices: "+sw_dev_marks+"/5  Hardware and Embedded Systems: "+hw_embeded_sys_marks
                  +"/5");
-                 skillAssessmentResultLog.add("Programming Skills: "+Prog_skills_marks+"/5  Systems and Networking: "+Sys_and_Net_marks
+                 a.skillAssessmentResultLog.add("Programming Skills: "+Prog_skills_marks+"/5  Systems and Networking: "+Sys_and_Net_marks
                  +"/5   Software Development Practices: "+sw_dev_marks+"/5  Hardware and Embedded Systems: "+hw_embeded_sys_marks
                  +"/5");
                  generateEvaluationStatements(Prog_skills_marks, Sys_and_Net_marks, sw_dev_marks, hw_embeded_sys_marks);
+                 DatabaseUtil.updatingSkillAssessmentResultLog(a, Prog_skills_marks, Sys_and_Net_marks, sw_dev_marks, hw_embeded_sys_marks);
                  }
                  public void printResultLog(){
                     System.out.println("Result Log:");
@@ -457,15 +458,18 @@ public void personalityAssessment( User a) {
     // Display the result
     String s="";
     a.setPersonalityTraits(TRAITS[maxScoreIndex]);
+   
     if(a.pt!=1){
         DatabaseUtil.updatingPersonalityTraits(TRAITS[maxScoreIndex], a.getId());
+        System.out.println("Your dominant trait is: " + TRAITS[maxScoreIndex]);
+        System.out.println("Based on your personality, you might enjoy careers such as:");
+        DatabaseUtil.updatingPersonalityTraitsResultLog(a);
+        for (String career : CAREERS[maxScoreIndex]) {
+            System.out.println("- " + career);
+            s+="- "+career;
+        }
     }
-    System.out.println("Your dominant trait is: " + TRAITS[maxScoreIndex]);
-    System.out.println("Based on your personality, you might enjoy careers such as:");
-    for (String career : CAREERS[maxScoreIndex]) {
-        System.out.println("- " + career);
-        s+="- "+career;
-    }
+   
     a.personalityAssessmentResultLog.put(TRAITS[maxScoreIndex], s);
 //scanner.nextLine();
   //  scanner.close();

@@ -196,7 +196,7 @@ public void setPassword(User u) {
     public void viewDetails(User u){
         System.out.println("Personal Details: ");
         System.out.println(u.toString());
-        System.out.println("Skills: ");
+        System.out.println("Skills");
         viewSkills(u);
     }
     public void editName(User u) throws Exception{
