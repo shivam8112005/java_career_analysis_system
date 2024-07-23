@@ -2,6 +2,8 @@ import java.sql.Connection;
 
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
@@ -19,16 +21,16 @@ public class UserService extends User{
    
     public void addUser(User user, String email) throws Exception{
         try (Connection connection = DatabaseUtil.getConnection()) {
-            String query = "INSERT INTO users (name, email, password, location, education, personality_traits) VALUES (?, ?, ?, ?, ?, ? )";
+            String query = "INSERT INTO users (name, email, phonenumber, password, location, education, experience, personality_traits) VALUES (?, ?, ?, ?, ?, ?, ?, ? )";
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             preparedStatement.setString(1, user.getName());
             preparedStatement.setString(2, user.getEmail());
-            preparedStatement.setString(3, user.getPassword());
-            preparedStatement.setString(4, user.getLocation());
-            preparedStatement.setString(5, user.getEducation());
-            //preparedStatement.setString(6, user.getSkills());
-            //preparedStatement.setString(7, user.getInterests());
-            preparedStatement.setString(6, user.getPersonalityTraits());
+            preparedStatement.setLong(3, user.getPhonenumber());
+            preparedStatement.setString(4, user.getPassword());
+            preparedStatement.setString(5, user.getLocation());
+            preparedStatement.setString(6, user.getEducation());
+            preparedStatement.setString(7, user.getExperience());
+            preparedStatement.setString(8, user.getPersonalityTraits());
             preparedStatement.executeUpdate();
             String query1="SELECT id FROM users WHERE email= ?";
             PreparedStatement pst=connection.prepareStatement(query1);
@@ -231,7 +233,8 @@ public class UserService extends User{
                  System.out.println("Programming Skills: "+Prog_skills_marks+"/5  Systems and Networking: "+Sys_and_Net_marks
                  +"/5   Software Development Practices: "+sw_dev_marks+"/5  Hardware and Embedded Systems: "+hw_embeded_sys_marks
                  +"/5");
-                 a.skillAssessmentResultLog.push("Programming Skills: "+Prog_skills_marks+"/5  Systems and Networking: "+Sys_and_Net_marks
+                 Timestamp eventTime = Timestamp.from(Instant.now());
+                 a.skillAssessmentResultLog.push("Date/Time: "+eventTime+" Programming Skills: "+Prog_skills_marks+"/5  Systems and Networking: "+Sys_and_Net_marks
                  +"/5   Software Development Practices: "+sw_dev_marks+"/5  Hardware and Embedded Systems: "+hw_embeded_sys_marks
                  +"/5");
                  generateEvaluationStatements(Prog_skills_marks, Sys_and_Net_marks, sw_dev_marks, hw_embeded_sys_marks);
@@ -478,13 +481,14 @@ public void personalityAssessment( User a) {
         System.out.println("Your dominant trait is: " + TRAITS[maxScoreIndex]);
         System.out.println("Based on your personality, you might enjoy careers such as:");
         DatabaseUtil.updatingPersonalityTraitsResultLog(a);
-        for (String career : CAREERS[maxScoreIndex]) {
-            System.out.println("- " + career);
-            s+="- "+career;
-        }
+        
     }
-   
-    a.personalityAssessmentResultLog.push(TRAITS[maxScoreIndex]+" : - "+s);
+    for (String career : CAREERS[maxScoreIndex]) {
+        System.out.println("- " + career);
+        s+="- "+career;
+    }
+     Timestamp eventTime = Timestamp.from(Instant.now());
+    a.personalityAssessmentResultLog.push("  Date/Time: "+eventTime+" "+TRAITS[maxScoreIndex]+" : - "+s);
 //scanner.nextLine();
   //  scanner.close();
 }
@@ -502,10 +506,6 @@ public void personalityAssessmentResultLog(User a){
                 
                    }
 }
-
-
-
-
  }
 
 

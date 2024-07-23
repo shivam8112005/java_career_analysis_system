@@ -9,10 +9,20 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Scanner;
 import java.sql.Statement;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.sql.CallableStatement;
 public class User {
     static Scanner sc=new Scanner(System.in);
-    int pt=1;
+    public Stack<String> skillAssessmentResultLog=new Stack<>();
+    public Stack<String>  personalityAssessmentResultLog=new Stack<>();
+    public ArrayList1<String> resumes=new ArrayList1<>();
+    public Queue<Skill> skills=new Queue<>();
+    public static HashMap<String,User> users=new HashMap<>();
+    
     private int id;
     private String name;
     private String email;
@@ -20,10 +30,10 @@ public class User {
     private String location;
     private String education;
     private String personalityTraits;
-    Stack<String> skillAssessmentResultLog=new Stack<>();
-    Stack<String>  personalityAssessmentResultLog=new Stack<>();
-    public static HashMap<String,User> users=new HashMap<>();
-    public Queue<Skill> skills=new Queue<>();
+    private long phonenumber;
+    private String experience;
+    int pt=1;
+
      public int getId() {
          return id;
      }
@@ -31,6 +41,18 @@ public class User {
         return education;
     }
 
+    public long getPhonenumber() {
+        return phonenumber;
+    }
+    public void setPhonenumber(long phonenumber) {
+        this.phonenumber = phonenumber;
+    }
+    public String getExperience() {
+        return experience;
+    }
+    public void setExperience(String experience) {
+        this.experience = experience;
+    }
     public void setEducation(String education) {
         this.education = education;
     }
@@ -115,6 +137,8 @@ public void setPassword() {
                  user.setId(resultSet.getInt("id"));
                  user.setName(resultSet.getString("name"));
                  user.setEmail(resultSet.getString("email"));
+                 user.setExperience(resultSet.getString("experience"));
+                 user.setPhonenumber(resultSet.getLong("phonenumber"));
                 // user.setSkills(resultSet.getString("skills"));
                //  user.setInterests(resultSet.getString("interests"));
                  user.setLocation(resultSet.getString("location"));
@@ -197,8 +221,10 @@ public void setPassword() {
         System.out.println("User Id: "+this.getId());
         System.out.println("Name: "+this.getName());
         System.out.println("Email: "+this.getEmail());
+        System.out.println("Contact Number: "+this.getPhonenumber());
         System.out.println("Location: "+this.getLocation());
         System.out.println("Education: "+this.getEducation());
+        System.out.println("Experience: "+this.getExperience());
         System.out.println("Personality Trait: "+this.getPersonalityTraits());
         System.out.println("---------------------------------- Skills --------------------------------------");
         viewSkills();
@@ -439,5 +465,247 @@ public void setPassword() {
         pst.setString(2, this.email);
         pst.executeUpdate();
         System.out.println();
+    }
+    public void buildResume(){
+       boolean exit=true;
+       while(exit){
+        System.out.println("1. Building for Yourself");
+        System.out.println("2. Building for Someone");
+        System.out.println("3. Resume Build History");
+        System.out.println("4. search Resume");// just show its name if present then ask to they want to download it or not
+        System.out.println("5. Return");
+        int c=sc.nextInt();
+        switch (c) {
+            case 1:
+            this.resumeBuidingForSelf();
+                break;
+            case 2:
+            this.resumeBuildingForSomeone();
+            break;
+            case 3:
+            for(int i=0;i<this.resumes.size();i++){
+                System.out.println(resumes.get(i));
+            }
+            break;
+            case 4:
+            exit=false;
+            break;
+            default:System.out.println("Invalid Input !");
+                break;
+        }
+       }
+    }
+    public void resumeBuidingForSelf(){
+        sc.nextLine();
+        System.out.println("Enter File Name You want Save Your Resume as: ");
+        String fn=sc.nextLine();
+        this.resumes.add(fn);
+        try {
+            FileWriter fw=new FileWriter("D://shivam//Resumes.txt",true);
+            BufferedWriter bw=new BufferedWriter(fw);
+            bw.write("========================================== Resume =======================================");
+            bw.newLine();
+            bw.newLine();
+            System.out.println("Enter Career Summary: ");
+            String co=sc.nextLine();
+            bw.write("------------------------------------------ Personal Details ------------------------------------");
+            bw.flush();
+            bw.newLine();bw.newLine();
+            bw.write("Name: "+this.getName());
+            bw.flush();
+            bw.newLine();bw.newLine();
+            bw.write("Location: "+this.getLocation());
+            bw.flush();
+            bw.newLine();bw.newLine();
+            bw.write("Email: "+this.getEmail());
+            bw.flush();
+            bw.newLine();bw.newLine();
+            bw.write("Contact Number: "+this.getPhonenumber());
+            bw.flush();
+            bw.newLine();bw.newLine();
+            bw.write("-------------------------------------------- Career Summary ------------------------------------");
+            bw.flush();
+            bw.newLine();bw.newLine();
+            bw.write(co);
+            bw.flush();
+            bw.newLine();bw.newLine();
+            bw.write("------------------------------------------- Educational Details ---------------------------------");
+            bw.flush();
+            bw.newLine();bw.newLine();
+            bw.write(this.getEducation());
+            bw.flush();
+            bw.newLine();bw.newLine();
+            bw.write("-------------------------------------------- Experience --------------------------------------");
+            bw.flush();
+            bw.newLine();bw.newLine();
+            bw.write(this.getExperience());
+            bw.flush();
+            bw.newLine();;bw.newLine();
+            bw.write("---------------------------------------------- Skills -------------------------------------");
+            bw.flush();
+            bw.newLine();bw.newLine();
+            Node<Skill> curr=this.skills.list.head;
+            int i=1;
+            while(curr!=null){
+                bw.write(i+". "+curr.data.getSkill());
+                bw.flush();
+                bw.newLine();
+                i++;
+                curr=curr.next;
+            }
+            bw.flush();
+            bw.close();
+            File f=new File("D://shivam//Resumes.txt");
+            FileReader fr=new FileReader(f);
+            DatabaseUtil.uploadingResume(this, fr,fn);
+            fw=new FileWriter("D://shivam//Resumes.txt",false);
+            fw.write("");
+            fw.flush();
+            fw.close();
+            fr.close();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+    public void resumeBuildingForSomeone(){
+        sc.nextLine();
+        System.out.println("Enter Resume Name: ");
+        String fn=sc.nextLine();
+        String sql="SELECT * FROM user_resume WHERE resume_name = ? AND user_id = ?";
+        try{
+            PreparedStatement ps=DatabaseUtil.getConnection().prepareStatement(sql);
+            ps.setString(1, fn);
+            ps.setInt(2, this.getId());
+            ResultSet rs1=ps.executeQuery();
+            while(rs1.next()){
+                System.out.println("Resume Name already exists !");
+                System.out.print("Re-enter Name: ");
+                fn=sc.nextLine();
+                ps.setString(1, fn);
+                ps.setInt(2, this.getId());
+                rs1=ps.executeQuery();
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+
+        this.resumes.add(fn);
+
+        System.out.print("Enter name: ");
+        String name = sc.nextLine();
+        
+        System.out.print("Enter location: ");
+        String location = sc.nextLine();
+        
+        System.out.print("Enter email: ");
+        String email = sc.nextLine();
+        
+        System.out.print("Enter contact number: ");
+        String contactNumber = sc.nextLine();
+        
+        System.out.print("Enter career summary: ");
+        String careerSummary = sc.nextLine();
+        
+        System.out.print("Enter education details: ");
+        String education = sc.nextLine();
+        
+        System.out.print("Enter experience details: ");
+        String experience = sc.nextLine();
+        System.out.println("Set Skills");
+       try{
+        String querry="SELECT * FROM skills";
+        Statement st=DatabaseUtil.getConnection().createStatement();
+        ResultSet rs=st.executeQuery(querry);
+        int i=0;
+        while(rs.next()){
+            System.out.print(rs.getInt("id")+". "+rs.getString("skill_name")+"   ");
+            if(i%4==0 && i!=0){
+                System.out.println();
+            }i++;
+        }
+       HashSet<Integer> hs=new HashSet<>();
+       System.out.print("Enter Number of skills you want Insert: ");
+       int n=sc.nextInt();
+       for(int j=0;j<n;j++){
+        int n1=sc.nextInt();
+        while(n1<7 || n1>31){
+            System.out.println("Enter Valid Id: ");
+            n1=sc.nextInt();
+        }
+        hs.add(n1);
+       }//System.out.println("jlhefiew f000000000000000");
+       FileWriter fw=new FileWriter("D://shivam//Resumes.txt",true);
+       BufferedWriter bw=new BufferedWriter(fw);
+       bw.write("========================================== Resume =======================================");
+       bw.newLine();
+       bw.newLine();
+       bw.write("------------------------------------------ Personal Details ------------------------------------");
+       bw.flush();
+       bw.newLine();bw.newLine();
+       bw.write("Name: "+name);
+       bw.flush();
+       bw.newLine();bw.newLine();
+       bw.write("Location: "+location);
+       bw.flush();
+       bw.newLine();bw.newLine();
+       bw.write("Email: "+email);
+       bw.flush();
+       bw.newLine();bw.newLine();
+       bw.write("Contact Number: "+contactNumber);
+       bw.flush();
+       bw.newLine();bw.newLine();
+       bw.write("-------------------------------------------- Career Summary ------------------------------------");
+       bw.flush();
+       bw.newLine();bw.newLine();
+       bw.write(careerSummary);
+       bw.flush();
+       bw.newLine();bw.newLine();
+       bw.write("------------------------------------------- Educational Details ---------------------------------");
+       bw.flush();
+       bw.newLine();bw.newLine();
+       bw.write(education);
+       bw.flush();
+       bw.newLine();bw.newLine();
+       bw.write("-------------------------------------------- Experience --------------------------------------");
+       bw.flush();
+       bw.newLine();bw.newLine();
+       bw.write(experience);
+       bw.flush();
+       bw.newLine();;bw.newLine();
+       bw.write("---------------------------------------------- Skills -------------------------------------");
+       bw.flush();
+       bw.newLine();bw.newLine();
+       String querry1="SELECT skill_name FROM skills WHERE id = ?";
+       PreparedStatement pst=DatabaseUtil.getConnection().prepareStatement(querry1);
+      // System.out.println("kwfhioew jfiewjiof ew0.111111111111111");
+       int k=1;
+       for(int x:hs){
+        pst.setInt(1, x);
+        ResultSet rs1=pst.executeQuery();
+        if(rs1.next()){
+        bw.write(k+". "+rs1.getString("skill_name"));
+        bw.flush();
+        bw.newLine();
+        k++;
+    }
+       }
+       //System.out.println("fnewifjewijf 0.22222222222222222222");
+       bw.flush();
+       bw.close();
+       File f=new File("D://shivam//Resumes.txt");
+       FileReader fr=new FileReader(f);
+       //System.out.println("jfnqew fiewojfiwje ifj woej 11111111111111");
+       DatabaseUtil.uploadingResume(this, fr,fn);
+      // System.out.println("welfkjhewi fiewjifjewojfwe 33333333333333333");
+       fw=new FileWriter("D://shivam//Resumes.txt",false);
+       fw.write("");
+       fw.flush();
+       fw.close();
+       fr.close();
+
+       }catch(Exception e){
+
+       }
     }
  }
