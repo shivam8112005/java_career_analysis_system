@@ -1,8 +1,10 @@
 
+import java.io.FileReader;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.Instant;
 
@@ -156,6 +158,21 @@ public class DatabaseUtil {
        // System.out.println(e.getMessage());
        }
 
+    }
+    public static void uploadingResume(User a, FileReader fr,String fileName){
+        String querry="INSERT INTO user_resume(user_id, resume_name, resume_text) VALUES(?, ?, ?) ";
+        try {
+            PreparedStatement pst=getConnection().prepareStatement(querry);
+            pst.setInt(1, a.getId());
+            pst.setString(2, fileName);
+            pst.setCharacterStream(3, fr);
+            pst.executeUpdate();
+            
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } 
+        
     }
    
 }

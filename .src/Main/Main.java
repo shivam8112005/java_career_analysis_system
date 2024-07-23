@@ -49,7 +49,7 @@ public class Main {
                // userService.skillAssessment();
                 break;
                 case 8:
-                userService.printResultLog();
+              //  userService.printResultLog();
                 break;
                 default:
                     System.out.println("Invalid option. Try again.");

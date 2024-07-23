@@ -120,13 +120,23 @@ public class UserMenu extends User {
         System.out.print("Enter name: ");
         sc.nextLine();
         String name = sc.nextLine();
+        System.out.print("Enter Phonenumber: ");
+        long pn=sc.nextLong();
+        while(pn<7000000000l || pn>9999999999l){
+            System.out.println("Enter Valid Phonenumber !");
+            pn=sc.nextLong();
+        }sc.nextLine();
         System.out.print("Enter Education: ");
         String edu=sc.nextLine();
+        System.out.print("Enter Experience: ");
+        String exp=sc.nextLine();
         System.out.print("Enter Location: ");
         String location=sc.nextLine();
         System.out.println();
         userService.personalityAssessment(this.u);
         u.pt++;
+        u.setExperience(exp);
+        u.setPhonenumber(pn);
         u.setName(name);
         u.setEmail(email);
         u.setLocation(location);
@@ -145,8 +155,9 @@ public class UserMenu extends User {
            System.out.println("1. Profile");
            System.out.println("2. Assessments");
            System.out.println("3. Career Matching");
-           System.out.println("4. Search User");
-           System.out.println("5. Log out");
+           System.out.println("4. Buid Resume");
+           System.out.println("5. Search User");
+           System.out.println("6. Log out");
             System.out.print("Choose an option: ");
           int choice=sc.nextInt();
             
@@ -162,13 +173,16 @@ public class UserMenu extends User {
                 userService.interestProfiling();
                     break;
                 case 4:
-                   
+                u.buildResume();
                     break;
 
                 case 5:
-                System.out.println("Logged out successfully.");
-                exit=false;
+               
                     break;
+               case 6:
+               System.out.println("Logged out successfully.");
+               exit=false;
+               break;
                
                 default:
                     System.out.println("Invalid option. Try again.");

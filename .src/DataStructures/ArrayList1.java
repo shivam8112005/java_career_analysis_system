@@ -1,12 +1,12 @@
 
 import java.util.Arrays;
 
- public class ArrayList<T> {
+ public class ArrayList1<T> {
     private Object[] arr;
     private int size;
     private static final int originalcap = 10;
 
-    public ArrayList() {
+    public ArrayList1() {
         arr = new Object[originalcap];
         size = 0;
     }

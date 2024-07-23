@@ -1,5 +1,5 @@
 public class Queue<T> {
-
+public int size=0;
     public LinkedList<T> list;
 
     public Queue() {
@@ -21,6 +21,13 @@ public class Queue<T> {
             current = current.next;
         }
         System.out.println();
+    }
+    public int size(){
+        Node<T> current = list.head;
+        while (current != null) {
+            size++;
+            current = current.next;
+        }return size;
     }
     public T peek() {
         if (isEmpty()) {
