@@ -685,14 +685,11 @@ public void setPassword() {
         k++;
      }
        }
-       //System.out.println("fnewifjewijf 0.22222222222222222222");
        bw.flush();
        bw.close();
        File f=new File("D://shivam//Resumes.txt");
        FileReader fr=new FileReader(f);
-       //System.out.println("jfnqew fiewojfiwje ifj woej 11111111111111");
        DatabaseUtil.uploadingResume(this, fr,fn);
-      // System.out.println("welfkjhewi fiewjifjewojfwe 33333333333333333");
        fw=new FileWriter("D://shivam//Resumes.txt",false);
        fw.write("");
        fw.flush();
