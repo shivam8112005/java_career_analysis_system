@@ -155,7 +155,7 @@ public class UserMenu extends User {
            System.out.println("1. Profile");
            System.out.println("2. Assessments");
            System.out.println("3. Career Matching");
-           System.out.println("4. Buid Resume");
+           System.out.println("4. Resumes");
            System.out.println("5. Search User");
            System.out.println("6. Log out");
             System.out.print("Choose an option: ");
