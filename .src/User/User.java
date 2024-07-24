@@ -9,12 +9,15 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Scanner;
 import java.sql.Statement;
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Reader;
 import java.sql.CallableStatement;
+import java.sql.Clob;
 public class User {
     static Scanner sc=new Scanner(System.in);
     public Stack<String> skillAssessmentResultLog=new Stack<>();
@@ -139,8 +142,6 @@ public void setPassword() {
                  user.setEmail(resultSet.getString("email"));
                  user.setExperience(resultSet.getString("experience"));
                  user.setPhonenumber(resultSet.getLong("phonenumber"));
-                // user.setSkills(resultSet.getString("skills"));
-               //  user.setInterests(resultSet.getString("interests"));
                  user.setLocation(resultSet.getString("location"));
                  user.setEducation(resultSet.getString("education"));
                  user.setPersonalityTraits(resultSet.getString("personality_traits"));
@@ -345,8 +346,6 @@ public void setPassword() {
         } 
         
     }
-    //***********************************************remove skills and interest from user table and create interest table which 
-    //is link with user like skills table take every input by id like (menu type) */
     public void editSkills( ) throws Exception{
         boolean exit=true;
         while(exit){
@@ -383,17 +382,14 @@ public void setPassword() {
         
     }
     public void viewSkills(){
-        //System.out.println("jdsfbhewuhfu 11111");
         int i=1;
         Node<Skill> current = this.skills.list.head;
         while (current != null) {
-           // System.out.println("dfjioerhfioe 222222");
             if(i%3==0){
                 System.out.println();
-               // System.out.println("dsjfhiuewhioewh 3333333");
-            }//System.out.println("jdbsfuewhjnrkjnf 44444");
+            }
             System.out.print(i+". "+current.data.toString() + "  ");
-           // System.out.println("liefjioewjfew fjejf 5555555");
+           
             current = current.next;
             i++;
         }
@@ -469,23 +465,23 @@ public void setPassword() {
     public void buildResume(){
        boolean exit=true;
        while(exit){
+        System.out.println("----------------------------------------- Resumes -------------------------------------");
         System.out.println("1. Building for Yourself");
         System.out.println("2. Building for Someone");
-        System.out.println("3. Resume Build History");
-        System.out.println("4. search Resume");// just show its name if present then ask to they want to download it or not
-        System.out.println("5. Return");
+        System.out.println("3. search Resume");
+        System.out.println("4. Return");
         int c=sc.nextInt();
         switch (c) {
             case 1:
+            System.out.println("---------------------------------------- Build Resume --------------------------------------");
             this.resumeBuidingForSelf();
                 break;
-            case 2:
+            case 2:System.out.println("---------------------------------------- Build Resume --------------------------------------");
             this.resumeBuildingForSomeone();
             break;
             case 3:
-            for(int i=0;i<this.resumes.size();i++){
-                System.out.println(resumes.get(i));
-            }
+            System.out.println("-------------------------------------- Search Resume -----------------------------------");
+           this.searchResume();
             break;
             case 4:
             exit=false;
@@ -497,7 +493,7 @@ public void setPassword() {
     }
     public void resumeBuidingForSelf(){
         sc.nextLine();
-        System.out.println("Enter File Name You want Save Your Resume as: ");
+        System.out.print("Enter File Name You want Save Your Resume as: ");
         String fn=sc.nextLine();
         this.resumes.add(fn);
         try {
@@ -570,7 +566,7 @@ public void setPassword() {
     }
     public void resumeBuildingForSomeone(){
         sc.nextLine();
-        System.out.println("Enter Resume Name: ");
+        System.out.print("Enter Resume Name: ");
         String fn=sc.nextLine();
         String sql="SELECT * FROM user_resume WHERE resume_name = ? AND user_id = ?";
         try{
@@ -634,7 +630,7 @@ public void setPassword() {
             n1=sc.nextInt();
         }
         hs.add(n1);
-       }//System.out.println("jlhefiew f000000000000000");
+       }
        FileWriter fw=new FileWriter("D://shivam//Resumes.txt",true);
        BufferedWriter bw=new BufferedWriter(fw);
        bw.write("========================================== Resume =======================================");
@@ -678,7 +674,6 @@ public void setPassword() {
        bw.newLine();bw.newLine();
        String querry1="SELECT skill_name FROM skills WHERE id = ?";
        PreparedStatement pst=DatabaseUtil.getConnection().prepareStatement(querry1);
-      // System.out.println("kwfhioew jfiewjiof ew0.111111111111111");
        int k=1;
        for(int x:hs){
         pst.setInt(1, x);
@@ -688,7 +683,7 @@ public void setPassword() {
         bw.flush();
         bw.newLine();
         k++;
-    }
+     }
        }
        //System.out.println("fnewifjewijf 0.22222222222222222222");
        bw.flush();
@@ -705,6 +700,95 @@ public void setPassword() {
        fr.close();
 
        }catch(Exception e){
+        e.printStackTrace();
+       }
+    }
+    public void searchResume(){
+        sc.nextLine();
+        System.out.print("Enter Resume Name: ");
+        String name=sc.nextLine();
+        String querry="SELECT * FROM user_resume WHERE user_id = ? AND resume_name = ?";
+        try {
+            PreparedStatement pst=DatabaseUtil.getConnection().prepareStatement(querry);
+            pst.setInt(1, this.getId());
+            pst.setString(2, name);
+            ResultSet rs=pst.executeQuery();
+            if(!rs.next()){
+                System.out.println("No Resume Found !");
+                return;
+            }
+                System.out.println("Resume Id: "+rs.getInt("resume_id")+"   Name: "+name);
+            
+           boolean exit=true;
+           while(exit){
+            System.out.println("==================================== Options =================================");
+            System.out.println("1. Preview");
+            System.out.println("2. Download");
+            System.out.println("3. Return");
+            int n=sc.nextInt();
+            switch (n) {
+                case 1:
+                this.previewResume(rs);
+                    break;
+                 case 2:
+                 this.downloadResume(rs);
+                    break;
+
+                 case 3:exit=false;
+                    break;
+
+                default:
+                    break;
+            }
+           }
+        
+        } catch (Exception e) {
+            // TODO: handle exception
+        }
+    }
+    public void previewResume(ResultSet rs){
+        System.out.println();
+        try {
+            Clob c=rs.getClob("resume_text");
+            Reader r=c.getCharacterStream();
+            BufferedReader br=new BufferedReader(r);
+            String s=br.readLine();
+            while(s!=null){
+                
+                System.out.println(s);
+                s=br.readLine();
+            }
+            
+         }catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+    }
+    public void downloadResume(ResultSet rs){
+       try{
+        Clob c=rs.getClob("resume_text");
+            Reader r=c.getCharacterStream();
+       String filename=rs.getString("resume_name");
+                FileWriter fw=new FileWriter("D://shivam//"+filename+".txt");
+                BufferedWriter bw=new BufferedWriter(fw);
+                BufferedReader br=new BufferedReader(r);
+                String line=br.readLine();
+                while(line!=null){
+                    bw.write(line);;
+                    bw.newLine();
+                   line=br.readLine();
+                   
+                }
+                fw.flush();
+                bw.flush();
+                bw.close();
+                fw.close();
+                br.close();
+                r.close();
+        System.out.println("Downloading Complete");
+       }
+       catch(Exception e){
 
        }
     }
