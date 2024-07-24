@@ -177,7 +177,7 @@ public class UserMenu extends User {
                     break;
 
                 case 5:
-               
+                u.searchUser();
                     break;
                case 6:
                System.out.println("Logged out successfully.");
@@ -207,6 +207,8 @@ public class UserMenu extends User {
             u.pt++;
                 break;    
             case 3:
+            boolean b=true;
+            while(b){
             System.out.println("================================= Result Logs =================================");
             System.out.println("1. skilled Assessment resultlog");
             System.out.println("2. Personality Assessment Resultlog");
@@ -219,7 +221,7 @@ public class UserMenu extends User {
                userService.personalityAssessmentResultLog(u);
             }else{
                 System.out.println("Invalid option. Try again.");
-            }
+            }}
                 break;
                 
                 case 4:exit=false;
