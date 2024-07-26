@@ -174,5 +174,34 @@ public class DatabaseUtil {
         } 
         
     }
+
+    public void addRecruiter(Recruiter user, String email) throws Exception{
+       // System.out.println("asfewi dij1111111111111111111111");
+        try (Connection connection = DatabaseUtil.getConnection()) {
+            String query = "INSERT INTO recruiters (name, email, phonenumber, password, location, companyname) VALUES (?, ?, ?, ?, ?, ? )";
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1, user.getName());
+            preparedStatement.setString(2, user.getEmail());
+            preparedStatement.setLong(3, user.getPhonenumber());
+            preparedStatement.setString(4, user.getPassword());
+            preparedStatement.setString(5, user.getLocation());
+            //preparedStatement.setString(6, user.getEducation());
+           // preparedStatement.setString(7, user.getExperience());
+            preparedStatement.setString(6, user.getCompanyname());
+            preparedStatement.executeUpdate();
+            String query1="SELECT id FROM recruiters WHERE email= ?";
+            PreparedStatement pst=connection.prepareStatement(query1);
+            pst.setString(1, user.getEmail());
+            ResultSet rs=pst.executeQuery();
+            if(rs.next()){
+                int id=rs.getInt("id");
+                user.setId(id);
+            }
+            //users.put(email, user);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        
+    }
    
 }

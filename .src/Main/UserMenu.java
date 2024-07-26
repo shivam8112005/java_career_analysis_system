@@ -1,4 +1,5 @@
 import java.util.*;
+import java.sql.CallableStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 public class UserMenu extends User {
@@ -83,11 +84,21 @@ public class UserMenu extends User {
                System.out.println("Reset password ?(y/n): ");
                String choice =sc.next();
                if(choice.equalsIgnoreCase("y")){
+                u=User.getUserByEmail(input);
                 System.out.println("Enter UserId: ");
                 int userid=sc.nextInt();
                 if(userid==User.getUserByEmail(input).getId()){
-                   setPassword();
-                   System.out.println("Password Updated successfully");
+                u.setPassword();
+                String querry="{call passupdation(?,?)}";
+                CallableStatement cst=DatabaseUtil.getConnection().prepareCall(querry);
+                cst.setString(1, u.getPassword());
+                cst.setString(2, u.getEmail());
+                boolean b1=cst.execute();
+                if(!b1){
+                    System.out.println("Password Updated Successfully.");
+                }else{
+                    System.out.println("Password Not Updated !");
+                }
                    break;
                 }else{
                     System.out.println("incorrect user id! login failed");
@@ -157,7 +168,8 @@ public class UserMenu extends User {
            System.out.println("3. Career Matching");
            System.out.println("4. Resumes");
            System.out.println("5. Search User");
-           System.out.println("6. Log out");
+           System.out.println("6. Search Jobs");
+           System.out.println("7. Log out");
             System.out.print("Choose an option: ");
           int choice=sc.nextInt();
             
@@ -180,10 +192,13 @@ public class UserMenu extends User {
                 u.searchUser();
                     break;
                case 6:
-               System.out.println("Logged out successfully.");
+               u.searchJobs();
+               break;
+
+               case 7: System.out.println("Logged out successfully.");
                exit=false;
                break;
-               
+
                 default:
                     System.out.println("Invalid option. Try again.");
             }

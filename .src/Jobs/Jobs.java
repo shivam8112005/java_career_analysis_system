@@ -1,10 +1,19 @@
-public class Jobs {
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.Scanner;
+
+
+
+public class Jobs extends Recruiter{
+    static Scanner sc=new Scanner(System.in);
     private int id;
     private String name;
     private String description;
-    private String requiredSkills;
     private String educationalRequirements;
     private String industryInsights;
+    public static ArrayList1<Jobs> jobs=new ArrayList1<>();
+    public ArrayList1<Skill> jobSkills=new ArrayList1<>();
+    
      public int getId() {
          return id;
      }
@@ -29,14 +38,7 @@ public class Jobs {
          this.description = description;
      }
 
-     public String getRequiredSkills() {
-         return requiredSkills;
-     }
-
-     public void setRequiredSkills(String requiredSkills) {
-         this.requiredSkills = requiredSkills;
-     }
-
+    
      public String getEducationalRequirements() {
          return educationalRequirements;
      }
@@ -52,4 +54,5 @@ public class Jobs {
      public void setIndustryInsights(String industryInsights) {
          this.industryInsights = industryInsights;
      }
+     
  }
