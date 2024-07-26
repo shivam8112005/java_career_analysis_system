@@ -11,7 +11,7 @@ public class CareerService {
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             preparedStatement.setString(1, job.getName());
             preparedStatement.setString(2, job.getDescription());
-            preparedStatement.setString(3, job.getRequiredSkills());
+          //  preparedStatement.setString(3, job.getRequiredSkills());
             preparedStatement.setString(4, job.getEducationalRequirements());
             preparedStatement.setString(5, job.getIndustryInsights());
             preparedStatement.executeUpdate();
@@ -32,7 +32,7 @@ public class CareerService {
                 career.setId(resultSet.getInt("id"));
                 career.setName(resultSet.getString("name"));
                 career.setDescription(resultSet.getString("description"));
-                career.setRequiredSkills(resultSet.getString("required_skills"));
+               // career.setRequiredSkills(resultSet.getString("required_skills"));
                 career.setEducationalRequirements(resultSet.getString("educational_requirements"));
                 career.setIndustryInsights(resultSet.getString("industry_insights"));
             }
