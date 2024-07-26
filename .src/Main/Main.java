@@ -70,7 +70,7 @@ public class Main {
         Jobs career = new Jobs();
         career.setName(name);
         career.setDescription(description);
-        career.setRequiredSkills(requiredSkills);
+        //career.setRequiredSkills(requiredSkills);
         career.setEducationalRequirements(educationalRequirements);
         career.setIndustryInsights(industryInsights);
         careerService.addCareer(career);
@@ -104,7 +104,7 @@ public class Main {
             System.out.println("ID: " + career.getId());
             System.out.println("Name: " + career.getName());
             System.out.println("Description: " + career.getDescription());
-            System.out.println("Required Skills: " + career.getRequiredSkills());
+           // System.out.println("Required Skills: " + career.getRequiredSkills());
             System.out.println("Educational Requirements: " + career.getEducationalRequirements());
             System.out.println("Industry Insights: " + career.getIndustryInsights());
         } else {
