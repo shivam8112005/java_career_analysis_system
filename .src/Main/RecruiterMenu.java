@@ -167,7 +167,6 @@ public class RecruiterMenu extends Recruiter{
                 r.profile();
                     break;
                 case 2:
-                System.out.println(r.companyname);
                 r.addJobListings();
                  //  assessments();
                     break;
