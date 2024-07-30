@@ -293,6 +293,7 @@ public static Recruiter getRecruiterByEmail(String email) throws Exception {
     }
     public void addJobListings(){
         Jobs j=new Jobs();
+        sc.nextLine();
         System.out.print("Enter Job Name: ");
        
         String name=sc.nextLine();
