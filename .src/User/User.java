@@ -949,7 +949,8 @@ public void setPassword() {
         System.out.println("2. Search Jobs By Company");
         System.out.println("3. Search Jobs By Skills");
         System.out.println("4. Search Jobs By Educational Requirements");
-        System.out.println("5. Return");
+        System.out.println("5. View Jobs You've Applied to");
+        System.out.println("6. Return");
         int n=sc.nextInt();
         switch (n) {
             case 1:
@@ -974,7 +975,10 @@ public void setPassword() {
                 break;
 
             case 5:
-            b=false;
+            // also so is active status of job and check all code first
+                break;
+            case 6:
+                b=false;
                 break;
 
             default:System.out.println("Invalid Input !");
@@ -1011,7 +1015,6 @@ public void setPassword() {
                 }catch(Exception e){
                     System.out.println(e.getMessage());
                 }
-                //just pass hashset in new method call which shows all joblistings of jobid present in hashset
                     break; 
 
                 case 2:
@@ -1145,6 +1148,11 @@ public void setPassword() {
             System.out.println("Email: "+rs3.getString("email"));
             System.out.println("Phone Number: "+rs3.getLong("phonenumber"));
             System.out.println("Company: "+rs3.getString("companyname"));
+            System.out.println("Apply ?(yes/no): ");
+                String ch=sc.next();
+                if(ch.equalsIgnoreCase("yes")){
+                    this.apply(r.getInt("id"));
+                }
         }else{
             System.out.println("Job Id Invalid !");
         }}
@@ -1228,6 +1236,11 @@ public void setPassword() {
                 System.out.println("Email: "+rs3.getString("email"));
                 System.out.println("Phone Number: "+rs3.getLong("phonenumber"));
                 System.out.println("Company: "+rs3.getString("companyname"));
+                System.out.println("Apply ?(yes/no): ");
+                String ch=sc.next();
+                if(ch.equalsIgnoreCase("yes")){
+                    this.apply(r.getInt("id"));
+                }
             }else{
                 System.out.println("Job Id Invalid !");
             }
@@ -1236,6 +1249,41 @@ public void setPassword() {
             e.printStackTrace();
         }
     }
+    }
+    public void apply(int jobId){
+        String sql="SELECT user_id FROM user_jobs1 WHERE job_id= ? AND user_id= ?";
+        String sql1="SELECT is_active FROM job_listings1 WHERE id= ?";
+        try {
+            PreparedStatement pst=DatabaseUtil.getConnection().prepareStatement(sql);
+            PreparedStatement pst2=DatabaseUtil.getConnection().prepareStatement(sql1);
+            pst2.setInt(1, jobId);
+            pst.setInt(1, jobId);
+            pst.setInt(2, this.getId());
+            ResultSet rs=pst.executeQuery();
+            ResultSet rs1=pst2.executeQuery();
+            if(rs.next()){
+                System.out.println("You've already applied for this job.");
+                return;
+            }if(rs1.next()){
+                 if(rs1.getBoolean("is_active")){
+                    System.out.println("Job is No Longer Available!");
+                    return;
+                }
+            }
+            String querry="INSERT INTO user_jobs1(user_id, job_id) VALUES(?, ?)";
+            PreparedStatement pst1=DatabaseUtil.getConnection().prepareStatement(querry);
+            pst1.setInt(1, this.getId());
+            pst1.setInt(2, jobId);
+            int r=pst1.executeUpdate();
+            if(r>0){
+                System.out.println("Successfully Applied.");
+            }else{
+                System.out.println("Not Apllied!");
+            }
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
     public void searchEducationalRequirements(){
         while(true){
