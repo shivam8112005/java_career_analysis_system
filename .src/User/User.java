@@ -981,12 +981,94 @@ public void setPassword() {
                 b=false;
                 break;
 
-            default:System.out.println("Invalid Input !");
+            default:System.out.println("Invalid Input!");
                 break;
         }
 
       }
     }
+    public void jobsApllied() throws Exception{
+        String sql="SELECT * FROM user_jobs1 WHERE user_id=?";
+        PreparedStatement pst=DatabaseUtil.getConnection().prepareStatement(sql);
+        pst.setInt(1, this.getId());
+        ResultSet rs=pst.executeQuery();
+        String sql1="SELECT * FROM job_listings1 where id=?";
+        int i=1;
+        while(rs.next()){
+            PreparedStatement pst1=DatabaseUtil.getConnection().prepareStatement(sql1);
+            pst1.setInt(1, rs.getInt("job_id"));
+            ResultSet rs1=pst1.executeQuery();
+            if(rs1.next()){
+                System.out.println(i+".  Job Title:"+rs1.getString("name")+"  Company Name:"+rs1.getString("company_name")+"  Job ID:"+rs1.getInt("ID"));
+            }
+            i++;
+        }System.out.println("0. Return");
+        System.out.print("Enter Job ID to view Job details and status:");
+        int ch=sc.nextInt();
+        String q1="SELECT job_id FROM user_jobs1 WHERE user_id=? AND job_id=? ";
+        PreparedStatement pst1=DatabaseUtil.getConnection().prepareStatement(q1);
+        pst1.setInt(1, this.getId());
+        pst1.setInt(2, ch);
+        ResultSet rs1=pst1.executeQuery();
+        if(rs1.next()){
+            String querry="SELECT rec_id FROM job_listings1 WHERE id = ?";
+            PreparedStatement pst2=DatabaseUtil.getConnection().prepareStatement(querry);
+            pst2.setInt(1, rs1.getInt("job_id"));
+            ResultSet rs2=pst2.executeQuery();
+            ResultSet rs3=null;
+            String q2="SELECT * FROM job_listings1 WHERE id=?";
+            PreparedStatement pst3=DatabaseUtil.getConnection().prepareStatement(q2);
+            pst3.setInt(1, rs1.getInt("job_id"));
+            ResultSet rs8=pst3.executeQuery();
+            System.out.println("-------------------------------------- Job Details -----------------------------------");
+            System.out.println("Job Id: "+rs8.getInt("id"));
+            System.out.println("Job Name: "+rs8.getString("name"));
+            System.out.println("Company: "+rs8.getString("company_name"));
+            System.out.println("Description: "+rs8.getString("description"));
+            System.out.println("Industry Insights: "+rs8.getString("industry_insights"));
+            System.out.println("Educational Requirements: "+rs8.getString("educational_requirements"));
+            if(rs2.next()){
+                String querry2="SELECT * FROM recruiters WHERE id = ?";
+                PreparedStatement pst5=DatabaseUtil.getConnection().prepareStatement(querry2);
+                pst5.setInt(1, rs2.getInt("rec_id"));
+                 rs3=pst5.executeQuery();
+                 if(rs3.next()){
+                    System.out.println("Location: "+rs3.getString("location"));
+                 }
+            }
+            String sql2="SELECT skill_id FROM job_skills1 WHERE job_id = ?";
+            PreparedStatement pre=DatabaseUtil.getConnection().prepareStatement(sql2);
+            pre.setInt(1, rs1.getInt("job_id"));
+            System.out.println("Skills Required: ");
+            ResultSet rs6=pre.executeQuery();
+            String q="SELECT skill_name FROM skills WHERE id = ?";
+            PreparedStatement pt=DatabaseUtil.getConnection().prepareStatement(q);
+            int i1=1;
+            while(rs6.next()){
+                pt.setInt(1, rs6.getInt("skill_id"));
+                ResultSet r1=pt.executeQuery();
+                if(i1%4==0){
+                    System.out.println();
+                }
+                if(r1.next()){
+                    System.out.print(i+". "+r1.getString("skill_name")+"  ");
+                }i1++;
+            }System.out.println();
+            System.out.println("------------------------------ Recruiter Details ----------------------------");
+            System.out.println("Recruiter Id: "+rs3.getInt("id"));
+            System.out.println("Name: "+rs3.getString("name"));
+            System.out.println("Email: "+rs3.getString("email"));
+            System.out.println("Phone Number: "+rs3.getLong("phonenumber"));
+            System.out.println("Company: "+rs3.getString("companyname"));
+           
+        }else{
+            System.out.println("Job Id Invalid !");
+        }}
+       
+            
+        
+
+    
     public void searchBySkills(){
         HashSet<Integer> jobId=new HashSet<>();
         while(true){

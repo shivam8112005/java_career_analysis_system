@@ -44,8 +44,8 @@ public class UserMenu extends User {
         // while(rs.next()){
 
         // }
-        UserMenu um=new UserMenu();
-        um.signUpMenu();
+         UserMenu um=new UserMenu();
+         um.signUpMenu();
     }
 
     public void customerLogIn() throws Exception{
