@@ -3,6 +3,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 class Recruiter extends User{
@@ -398,7 +399,139 @@ public static Recruiter getRecruiterByEmail(String email) throws Exception {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-       
-
+      
      }
-}
+     public void viewApplications(){
+        System.out.println("---------------------------------- Job Applications ----------------------------------");
+        String sql="SELECT ID FROM job_listings1 where rec_id=?";
+        try {
+            PreparedStatement pst=DatabaseUtil.getConnection().prepareStatement(sql);
+            pst.setInt(1, this.getId());
+            ResultSet rs=pst.executeQuery();
+            String sql1="SELECT user_id FROM user_jobs1 where job_id=?";
+            PreparedStatement pst1=DatabaseUtil.getConnection().prepareStatement(sql1);
+            int i=1;
+            ArrayList<Integer> uid=new ArrayList<>();
+            
+            while(rs.next()){
+                pst1.setInt(1, rs.getInt("ID"));
+                ResultSet rs1=pst1.executeQuery();
+                String sql2="SELECT * FROM users WHERE id=?";
+                PreparedStatement pst2=DatabaseUtil.getConnection().prepareStatement(sql2);
+                while(rs1.next()){
+                    pst2.setInt(1, rs1.getInt("user_id"));
+                    ResultSet rs2=pst2.executeQuery();
+                    if(rs2.next()){
+                        System.out.println(i+".  Name: "+rs2.getString("name")+"   User ID: "+rs2.getInt("id")+"  Job ID: "+rs.getInt("ID")+"  Education: "+rs2.getString("education"));
+                        uid.add(rs2.getInt("id"));
+                       
+                    }
+                    i++;
+                }
+                
+            }if(i==1){
+                System.out.println("No Applications.");
+                return;
+            }
+            System.out.print("Enter User ID to view full Details(or Enter 0 to Exit): ");
+            int ch=sc.nextInt();
+            if(ch==0){
+                return;
+            }
+            System.out.print("Enter Job Id: ");
+            int jid=sc.nextInt();
+            String df="SELECT * from user_jobs1 where job_id=? AND user_id=?";
+            PreparedStatement asd=DatabaseUtil.getConnection().prepareStatement(df);
+            asd.setInt(1, jid);
+            asd.setInt(2, ch);
+            ResultSet ty=asd.executeQuery();
+           if(ty.next()){
+                String querry1="SELECT email FROM users WHERE id = ?";
+                PreparedStatement pst3=DatabaseUtil.getConnection().prepareStatement(querry1);
+                pst3.setInt(1, ch);
+                ResultSet rs3=pst3.executeQuery();
+                if(rs3.next()){
+                   User u= getUserByEmail(rs3.getString("email"));
+                   System.out.println("----------------------------- Personal Details -------------------------------");
+                   System.out.println("User Id: "+u.getId());
+                   System.out.println("Name: "+u.getName());
+                   System.out.println("Email: "+u.getEmail());
+                   System.out.println("Contact Number: "+u.getPhonenumber());
+                   System.out.println("Location: "+u.getLocation());
+                   System.out.println("Education: "+u.getEducation());
+                   System.out.println("Experience: "+u.getExperience());
+                   System.out.println("Personality Trait: "+u.getPersonalityTraits());
+                   System.out.println("---------------------------------- Skills --------------------------------------");
+                   String querry2="SELECT skill_id FROM user_skills WHERE user_id = ?";
+                   PreparedStatement pst2=DatabaseUtil.getConnection().prepareStatement(querry2);
+                   pst2.setInt(1, u.getId());
+                   ResultSet rs2=pst2.executeQuery();
+                   int i1=1;
+                   boolean b1=true;
+                   while(rs2.next()){
+                    b1=false;
+                    String querry3="SELECT skill_name FROM skills WHERE id = ?";
+                    PreparedStatement pst4=DatabaseUtil.getConnection().prepareStatement(querry3);
+                    pst4.setInt(1, rs2.getInt("skill_id"));
+                    ResultSet rs4=pst4.executeQuery();
+                    if(i1%3==0){
+                        System.out.println();
+                    }
+                    if(rs4.next()){
+                        System.out.print(i1+". "+rs4.getString("skill_name")+"  ");
+                    }
+                    i1++;
+                    
+                   }if(b1){
+                    System.out.println("No Skills Addedd !");
+                    return;
+                   }System.out.println();
+                   System.out.print("Recruit?(yes/no): ");
+                   String ch1=sc.next();
+                   if(ch1.equalsIgnoreCase("yes")){
+                    this.recruit(jid);
+                   }else{
+                    viewApplications();
+                   }
+                }
+            }else{
+                System.out.println("No such Application found!");
+                viewApplications();
+            }
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        
+    }
+    public void recruit(int jid){
+        try(Connection con= DatabaseUtil.getConnection();) {
+           
+            con.setAutoCommit(false);
+            String s1="UPDATE job_listings1 SET is_active=? where id=?";
+            PreparedStatement pst;
+         
+                pst = con.prepareStatement(s1);
+                pst.setInt(1, 1);
+                pst.setInt(2, jid);
+                int r=pst.executeUpdate();
+                System.out.print("Are you sure to Recruit this candidate?(yes/no): ");
+                String ch=sc.next();
+                if(ch.equalsIgnoreCase("yes")){
+                    con.commit();
+                    System.out.println("Recruited Successfully.");
+                }else{
+                    con.rollback();
+                    System.out.println("Not Recruited.");
+                }
+                
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+       
+    }
+    
+       
+    }
+

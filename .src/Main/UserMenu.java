@@ -227,6 +227,7 @@ public class UserMenu extends User {
             System.out.println("================================= Result Logs =================================");
             System.out.println("1. skilled Assessment resultlog");
             System.out.println("2. Personality Assessment Resultlog");
+            System.out.println("3. Return");
             int c=sc.nextInt();
             if(c==1){
                 System.out.println("=============================== Skilled Assessment Result History =================================");
@@ -234,7 +235,10 @@ public class UserMenu extends User {
             }else if(c==2){
                 System.out.println("============================== Personality Assessment Result History ================================");
                userService.personalityAssessmentResultLog(u);
-            }else{
+            }else if(c==3){
+                return;
+            }
+            else{
                 System.out.println("Invalid option. Try again.");
             }}
                 break;

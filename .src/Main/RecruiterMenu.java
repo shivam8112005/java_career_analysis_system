@@ -159,7 +159,8 @@ public class RecruiterMenu extends Recruiter{
            System.out.println("1. Profile");
            System.out.println("2. Add Job Listings");
            System.out.println("3. Search User");
-           System.out.println("4. Log out");
+           System.out.println("4. view applications");
+           System.out.println("5. Log out");
             System.out.print("Choose an option: ");
           int choice=sc.nextInt();
             switch (choice) {
@@ -174,16 +175,13 @@ public class RecruiterMenu extends Recruiter{
                // userService.interestProfiling();
                     break;
                 case 4:
-               // u.buildResume();
+               r.viewApplications();
                     break;
 
                 case 5:
-                //u.searchUser();
-                    break;
-               case 6:
-               System.out.println("Logged out successfully.");
+                System.out.println("Logged out successfully.");
                exit=false;
-               break;
+                    break;
                
                 default:
                     System.out.println("Invalid option. Try again.");
