@@ -257,7 +257,6 @@ public void setPassword() {
         System.out.println();
         if(isValidEmail(email)){
             if(email.equals(this.email)){
-                System.out.print("Enter New Password: ");
                 setPassword();
                 String querry="{call passupdation(?,?)}";
                 CallableStatement cst=DatabaseUtil.getConnection().prepareCall(querry);
@@ -307,6 +306,8 @@ public void setPassword() {
            }else{
             System.out.println("Email Invalid ! ");
            }
+        }else{
+            System.out.println("Invalid ID!");
         }
     }public void setSkill() throws Exception{
         String querry="SELECT * FROM skills";
@@ -563,6 +564,7 @@ public void setPassword() {
             fw.flush();
             fw.close();
             fr.close();
+            System.out.println("Resume Build Successfully.");
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -699,27 +701,41 @@ public void setPassword() {
        fw.flush();
        fw.close();
        fr.close();
-
+       System.out.println("Resume Build Successfully.");
        }catch(Exception e){
         e.printStackTrace();
        }
     }
     public void searchResume(){
+       
         sc.nextLine();
-        System.out.print("Enter Resume Name: ");
-        String name=sc.nextLine();
-        String querry="SELECT * FROM user_resume WHERE user_id = ? AND resume_name = ?";
+        
+        String querry="SELECT * FROM user_resume WHERE user_id = ?";
         try {
             PreparedStatement pst=DatabaseUtil.getConnection().prepareStatement(querry);
             pst.setInt(1, this.getId());
-            pst.setString(2, name);
             ResultSet rs=pst.executeQuery();
-            if(!rs.next()){
-                System.out.println("No Resume Found !");
-                return;
-            }
-                System.out.println("Resume Id: "+rs.getInt("resume_id")+"   Name: "+name);
+            int i=1;
             
+            while(rs.next()){
+                System.out.println("Resume Id: "+rs.getInt("resume_id")+"   Name: "+rs.getString("resume_name"));
+                
+                i++;
+        }if(i==1){
+            System.out.println("No Resume Found!");
+            return;
+        }
+        System.out.print("Enter Resume ID: ");
+        int iid=sc.nextInt();
+        String sql="SELECT * FROM user_resume WHERE user_id=? AND resume_id=?";
+        PreparedStatement pst1=DatabaseUtil.getConnection().prepareStatement(sql);
+        pst1.setInt(1, this.getId());
+        pst1.setInt(2, iid);
+        ResultSet rs1=pst1.executeQuery();
+        if(!rs1.next()){
+            System.out.println("Invalid resume id!");
+            return;
+        }
            boolean exit=true;
            while(exit){
             System.out.println("==================================== Options =================================");
@@ -727,16 +743,21 @@ public void setPassword() {
             System.out.println("2. Download");
             System.out.println("3. Return");
             int n=sc.nextInt();
+           
             switch (n) {
 
                 case 1:
                 System.out.println("***********************************************************************************************************************************************");
-                this.previewResume(rs);
+                
+                    this.previewResume(rs1);
+                
                 System.out.println("************************************************************************************************************************************************");
                 
                     break;
                  case 2:
-                 this.downloadResume(rs);
+                 
+                    this.downloadResume(rs1);
+                 
                     break;
 
                  case 3:exit=false;
@@ -976,6 +997,12 @@ public void setPassword() {
 
             case 5:
             // also so is active status of job and check all code first
+                try {
+                    this.jobsApllied();
+                } catch (Exception e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
                 break;
             case 6:
                 b=false;
@@ -988,6 +1015,7 @@ public void setPassword() {
       }
     }
     public void jobsApllied() throws Exception{
+        System.out.println("---------------------------------- Jobs Applied ------------------------------");
         String sql="SELECT * FROM user_jobs1 WHERE user_id=?";
         PreparedStatement pst=DatabaseUtil.getConnection().prepareStatement(sql);
         pst.setInt(1, this.getId());
@@ -999,12 +1027,19 @@ public void setPassword() {
             pst1.setInt(1, rs.getInt("job_id"));
             ResultSet rs1=pst1.executeQuery();
             if(rs1.next()){
-                System.out.println(i+".  Job Title:"+rs1.getString("name")+"  Company Name:"+rs1.getString("company_name")+"  Job ID:"+rs1.getInt("ID"));
+                System.out.println(i+".  Job Title: "+rs1.getString("name")+"   Company Name: "+rs1.getString("company_name")+"   Job ID: "+rs1.getInt("ID"));
             }
             i++;
-        }System.out.println("0. Return");
+        }if(i==1){
+                System.out.println("No Jobs submission.");
+                return;
+        }
+        System.out.println("0. Return");
         System.out.print("Enter Job ID to view Job details and status:");
         int ch=sc.nextInt();
+        if(ch==0){
+            return;
+        }
         String q1="SELECT job_id FROM user_jobs1 WHERE user_id=? AND job_id=? ";
         PreparedStatement pst1=DatabaseUtil.getConnection().prepareStatement(q1);
         pst1.setInt(1, this.getId());
@@ -1020,13 +1055,20 @@ public void setPassword() {
             PreparedStatement pst3=DatabaseUtil.getConnection().prepareStatement(q2);
             pst3.setInt(1, rs1.getInt("job_id"));
             ResultSet rs8=pst3.executeQuery();
-            System.out.println("-------------------------------------- Job Details -----------------------------------");
-            System.out.println("Job Id: "+rs8.getInt("id"));
-            System.out.println("Job Name: "+rs8.getString("name"));
-            System.out.println("Company: "+rs8.getString("company_name"));
-            System.out.println("Description: "+rs8.getString("description"));
-            System.out.println("Industry Insights: "+rs8.getString("industry_insights"));
-            System.out.println("Educational Requirements: "+rs8.getString("educational_requirements"));
+            if(rs8.next()){
+                System.out.println("-------------------------------------- Job Details -----------------------------------");
+                System.out.println("Job Id: "+rs8.getInt("id"));
+                System.out.println("Job Name: "+rs8.getString("name"));
+                System.out.println("Company: "+rs8.getString("company_name"));
+                System.out.println("Description: "+rs8.getString("description"));
+                System.out.println("Industry Insights: "+rs8.getString("industry_insights"));
+                System.out.println("Educational Requirements: "+rs8.getString("educational_requirements"));
+                if(rs8.getBoolean("is_active")){
+                    System.out.println("Job Status: Inactive");
+                }else{
+                    System.out.println("Job Status: Active");
+                }
+            }
             if(rs2.next()){
                 String querry2="SELECT * FROM recruiters WHERE id = ?";
                 PreparedStatement pst5=DatabaseUtil.getConnection().prepareStatement(querry2);
@@ -1051,7 +1093,7 @@ public void setPassword() {
                     System.out.println();
                 }
                 if(r1.next()){
-                    System.out.print(i+". "+r1.getString("skill_name")+"  ");
+                    System.out.print(i1+". "+r1.getString("skill_name")+"  ");
                 }i1++;
             }System.out.println();
             System.out.println("------------------------------ Recruiter Details ----------------------------");
@@ -1060,9 +1102,11 @@ public void setPassword() {
             System.out.println("Email: "+rs3.getString("email"));
             System.out.println("Phone Number: "+rs3.getLong("phonenumber"));
             System.out.println("Company: "+rs3.getString("companyname"));
+            jobsApllied();
            
         }else{
             System.out.println("Job Id Invalid !");
+            jobsApllied();
         }}
        
             
@@ -1197,6 +1241,11 @@ public void setPassword() {
             System.out.println("Description: "+r.getString("description"));
             System.out.println("Industry Insights: "+r.getString("industry_insights"));
             System.out.println("Educational Requirements: "+r.getString("educational_requirements"));
+            if(r.getBoolean("is_active")){
+                System.out.println("Job Status: Inactive");
+            }else{
+                System.out.println("Job Status: Active");
+            }
             if(rs2.next()){
                 String querry2="SELECT * FROM recruiters WHERE id = ?";
                 PreparedStatement pst3=DatabaseUtil.getConnection().prepareStatement(querry2);
@@ -1288,6 +1337,11 @@ public void setPassword() {
                 System.out.println("Description: "+r.getString("description"));
                 System.out.println("Industry Insights: "+r.getString("industry_insights"));
                 System.out.println("Educational Requirements: "+r.getString("educational_requirements"));
+                if(r.getBoolean("is_active")){
+                    System.out.println("Job Status: Inactive");
+                }else{
+                    System.out.println("Job Status: Active");
+                }
                 if(rs2.next()){
                     String querry2="SELECT * FROM recruiters WHERE id = ?";
                     PreparedStatement pst3=DatabaseUtil.getConnection().prepareStatement(querry2);
@@ -1333,6 +1387,7 @@ public void setPassword() {
     }
     }
     public void apply(int jobId){
+        
         String sql="SELECT user_id FROM user_jobs1 WHERE job_id= ? AND user_id= ?";
         String sql1="SELECT is_active FROM job_listings1 WHERE id= ?";
         try {
@@ -1351,16 +1406,21 @@ public void setPassword() {
                     System.out.println("Job is No Longer Available!");
                     return;
                 }
-            }
+            }Connection con=DatabaseUtil.getConnection();
+            con.setAutoCommit(false);
             String querry="INSERT INTO user_jobs1(user_id, job_id) VALUES(?, ?)";
-            PreparedStatement pst1=DatabaseUtil.getConnection().prepareStatement(querry);
+            PreparedStatement pst1=con.prepareStatement(querry);
             pst1.setInt(1, this.getId());
             pst1.setInt(2, jobId);
             int r=pst1.executeUpdate();
-            if(r>0){
+            System.out.print("Are you Sure to apply to this job?(yes/no): ");
+            String h=sc.next();
+            if(h.equalsIgnoreCase("yes")){
                 System.out.println("Successfully Applied.");
+                con.commit();
             }else{
                 System.out.println("Not Apllied!");
+                con.rollback();
             }
         } catch (Exception e) {
             // TODO Auto-generated catch block
