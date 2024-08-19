@@ -1,4 +1,7 @@
+import java.io.BufferedReader;
+import java.io.Reader;
 import java.sql.CallableStatement;
+import java.sql.Clob;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -485,7 +488,36 @@ public static Recruiter getRecruiterByEmail(String email) throws Exception {
                    }if(b1){
                     System.out.println("No Skills Addedd !");
                     return;
-                   }System.out.println();
+                   }
+                   System.out.println();
+               System.out.print("View User Resume?(yes/no): ");
+               String c=sc.next();
+               if(c.equalsIgnoreCase("yes")){
+                System.out.println();
+                try {
+                    String q1="SELECT RESUME from users where id=?";
+                    PreparedStatement ps=DatabaseUtil.getConnection().prepareStatement(q1);
+                    ps.setInt(1, ch);
+                    ResultSet r1=ps.executeQuery();
+                    if(r1.next()){
+                        boolean bool=true;
+                        Clob c1=r1.getClob("resume");
+                    Reader r=c1.getCharacterStream();
+                    BufferedReader br=new BufferedReader(r);
+                    String s=br.readLine();
+                    while(s!=null){
+                        bool=false;
+                        System.out.println(s);
+                        s=br.readLine();
+                    }if(bool){
+                        System.out.println("No Resume Added by User.");
+                    }
+                    }
+                    
+                 }catch (Exception e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
                    System.out.print("Recruit?(yes/no): ");
                    String ch1=sc.next();
                    if(ch1.equalsIgnoreCase("yes")){
@@ -498,7 +530,7 @@ public static Recruiter getRecruiterByEmail(String email) throws Exception {
                 System.out.println("No such Application found!");
                 viewApplications();
             }
-        } catch (Exception e) {
+        }} catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
