@@ -871,11 +871,39 @@ public void setPassword() {
                if(b1){
                 System.out.println("No Skills Addedd !");
                 return;
-               }
+               }System.out.println();
+               System.out.print("View User Resume?(yes/no): ");
+               String c=sc.next();
+               if(c.equalsIgnoreCase("yes")){
+                System.out.println();
+                try {
+                    String sql="SELECT RESUME from users where id=?";
+                    PreparedStatement ps=DatabaseUtil.getConnection().prepareStatement(sql);
+                    ps.setInt(1, n);
+                    ResultSet r1=ps.executeQuery();
+                    if(r1.next()){
+                        boolean bool=true;
+                        Clob c1=r1.getClob("resume");
+                    Reader r=c1.getCharacterStream();
+                    BufferedReader br=new BufferedReader(r);
+                    String s=br.readLine();
+                    while(s!=null){
+                        bool=false;
+                        System.out.println(s);
+                        s=br.readLine();
+                    }if(bool){
+                        System.out.println("No Resume Added by User.");
+                    }
+                    }
+                    
+                 }catch (Exception e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
             }else{
                 System.out.println("User Not Found!");
             }
-            }
+        }}
                      catch (Exception e) {
                         // TODO Auto-generated catch block
                         e.printStackTrace();
@@ -953,6 +981,35 @@ public void setPassword() {
                }if(b1){
                 System.out.println("No Skills Addedd !");
                 return;
+               }System.out.println();
+               System.out.print("View User Resume?(yes/no): ");
+               String c=sc.next();
+               if(c.equalsIgnoreCase("yes")){
+                System.out.println();
+                try {
+                    String sql="SELECT RESUME from users where id=?";
+                    PreparedStatement ps=DatabaseUtil.getConnection().prepareStatement(sql);
+                    ps.setInt(1, n);
+                    ResultSet r1=ps.executeQuery();
+                    if(r1.next()){
+                        boolean bool=true;
+                        Clob c1=r1.getClob("resume");
+                    Reader r=c1.getCharacterStream();
+                    BufferedReader br=new BufferedReader(r);
+                    String s=br.readLine();
+                    while(s!=null){
+                        bool=false;
+                        System.out.println(s);
+                        s=br.readLine();
+                    }if(bool){
+                        System.out.println("No Resume Added by User.");
+                    }
+                    }
+                    
+                 }catch (Exception e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
                }
             }else{
                 System.out.println("User Id Didn't Match!");
@@ -1198,8 +1255,7 @@ public void setPassword() {
         }
         this.displayJobByUserSkill(jobId);
     }
-    public void displayJobByUserSkill(HashSet<Integer> jobId){
-        
+    public void displayJobByUserSkill(HashSet<Integer> jobId){ 
        try{
         while(true){
         String sql1="SELECT * FROM job_listings1 WHERE id = ?";
