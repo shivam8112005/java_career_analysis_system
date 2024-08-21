@@ -221,6 +221,9 @@ public void setPassword() {
         }
        }
     }
+    public void addResume(){
+        
+    }
     public void viewDetails( ){
         System.out.println("----------------------------- Personal Details -------------------------------");
         System.out.println("User Id: "+this.getId());
@@ -1421,7 +1424,10 @@ public void setPassword() {
                     if(r1.next()){
                         System.out.print(i+". "+r1.getString("skill_name")+"  ");
                     }i++;
-                }System.out.println();
+                }if(i==1){
+                    System.out.print("No Skills Required!");
+                }
+                System.out.println();
                 System.out.println("------------------------------ Recruiter Details ----------------------------");
                 System.out.println("Recruiter Id: "+rs3.getInt("id"));
                 System.out.println("Name: "+rs3.getString("name"));

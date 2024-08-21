@@ -9,6 +9,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import com.mysql.cj.protocol.Resultset;
+
 class Recruiter extends User{
     static Scanner sc=new Scanner(System.in);
     public int id;
@@ -322,7 +324,7 @@ public static Recruiter getRecruiterByEmail(String email) throws Exception {
         String educationalRequirements=sc.nextLine();
         System.out.print("Enter Industry Insights: ");
         String industryInsights=sc.nextLine();
-        String sql="INSERT INTO job_listings1(rec_id, company_name, name, description, educational_requirements, industry_insights) VALUES (?, ?, ?, ?, ?, ?)";
+        String sql="INSERT INTO job_listings1(rec_id, company_name, name, description, educational_requirements, industry_insights, is_active) VALUES (?, ?, ?, ?, ?, ?, ?)";
         try {
             PreparedStatement ps=DatabaseUtil.getConnection().prepareStatement(sql);
             ps.setInt(1, this.getId());
@@ -331,6 +333,7 @@ public static Recruiter getRecruiterByEmail(String email) throws Exception {
             ps.setString(4, description);
             ps.setString(5, educationalRequirements);
             ps.setString(6, industryInsights);
+            ps.setBoolean(7, false);
             int r=ps.executeUpdate();
            
             if(r>0){
@@ -373,6 +376,9 @@ public static Recruiter getRecruiterByEmail(String email) throws Exception {
         }
         System.out.print("Enter Number of Skills to Add: ");
         int n=sc.nextInt();
+        if(n==0){
+            return;
+        }
         int[] arr=new int[n];
         System.out.println("Enter SKill Id: ");
         String querry1="INSERT INTO job_skills1(job_id, skill_id) VALUES(?, ?)";
@@ -403,6 +409,75 @@ public static Recruiter getRecruiterByEmail(String email) throws Exception {
             e.printStackTrace();
         }
       
+     }
+     public void postedJobs(){
+        String sql="SELECT * FROM job_listings1 where rec_id=?";
+        try {
+            System.out.println("------------------------------------- Jobs Posted ------------------------------------");
+            PreparedStatement pst=DatabaseUtil.getConnection().prepareStatement(sql);
+            pst.setInt(1, this.getId());
+            ResultSet rs=pst.executeQuery();
+            int i=1;
+            while(rs.next()){
+                System.out.println(i+".  Job Name: "+rs.getString("name")+"  Company Name: "+rs.getString("company_name")+"  Job ID: "+rs.getInt("id"));
+                i++;
+            }
+            if(i==1){
+                System.out.println("No Jobs Posted.");
+                return;
+            } System.out.print("Enter Job ID to view Job details and status(Enter 0 to Return): ");
+            int ch=sc.nextInt();
+            if(ch==0){
+                return;
+            }
+            String sql1="select * from job_listings1 where id=?";
+            PreparedStatement pst1=DatabaseUtil.getConnection().prepareStatement(sql1);
+            pst1.setInt(1, ch);
+            ResultSet rs1=pst1.executeQuery();
+            if(rs1.next()){
+                System.out.println("-------------------------------------- Job Details -----------------------------------");
+                System.out.println("Job Id: "+rs1.getInt("id"));
+                System.out.println("Job Name: "+rs1.getString("name"));
+                System.out.println("Company: "+rs1.getString("company_name"));
+                System.out.println("Description: "+rs1.getString("description"));
+                System.out.println("Industry Insights: "+rs1.getString("industry_insights"));
+                System.out.println("Educational Requirements: "+rs1.getString("educational_requirements"));
+                if(rs1.getBoolean("is_active")){
+                    System.out.println("Job Status: Inactive");
+                }else{
+                    System.out.println("Job Status: Active");
+                }
+                System.out.println("Skills Required: " );
+                String sql3="select skill_id from job_skills1 where job_id=?";
+                PreparedStatement pst3=DatabaseUtil.getConnection().prepareStatement(sql3);
+                pst3.setInt(1, ch);
+                ResultSet rs3=pst3.executeQuery();
+                String sql2="select skill_name from skills where id=?";
+                PreparedStatement pst2=DatabaseUtil.getConnection().prepareStatement(sql2);
+                int j=1;
+                while(rs3.next()){
+                    pst2.setInt(1, rs3.getInt("skill_id"));
+                    ResultSet rs2=pst2.executeQuery();
+                    if(j%4==0){
+                        System.out.println();
+                    }
+                    if(rs2.next()){
+                        System.out.print(j+". "+rs2.getString("skill_name")+"  ");
+                        j++;
+                    }
+                }if(j==1){
+                    System.out.print("No skills Added.");
+                }System.out.println();
+               
+            }else{
+                System.out.println("Invalid Job Id!");
+                
+            }
+            postedJobs();
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
      }
      public void viewApplications(){
         System.out.println("---------------------------------- Job Applications ----------------------------------");
@@ -518,19 +593,20 @@ public static Recruiter getRecruiterByEmail(String email) throws Exception {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
-                   System.out.print("Recruit?(yes/no): ");
-                   String ch1=sc.next();
-                   if(ch1.equalsIgnoreCase("yes")){
-                    this.recruit(jid);
-                   }else{
-                    viewApplications();
-                   }
+                  
                 }
-            }else{
-                System.out.println("No such Application found!");
+                System.out.print("Recruit?(yes/no): ");
+                String ch1=sc.next();
+                if(ch1.equalsIgnoreCase("yes")){
+                 this.recruit(jid);
+                }
                 viewApplications();
             }
-        }} catch (Exception e) {
+        }else{
+            System.out.println("No such Application found!");
+            viewApplications();
+        }
+    } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }

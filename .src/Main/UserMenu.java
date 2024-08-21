@@ -36,17 +36,7 @@ public class UserMenu extends User {
             }
         }
     }
-    public static void main(String[] args) throws Exception{
-        
-        // String querry="SELECT * FROM users";
-        // Statement st=DatabaseUtil.getConnection().createStatement();
-        // ResultSet rs=st.executeQuery(querry);
-        // while(rs.next()){
-
-        // }
-         UserMenu um=new UserMenu();
-         um.signUpMenu();
-    }
+    
 
     public void customerLogIn() throws Exception{
         while (true) {
