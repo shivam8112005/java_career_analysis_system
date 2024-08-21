@@ -79,7 +79,7 @@ public class UserService extends User{
     
 
 
-    // Other methods for skill assessment, interest profiling, etc.
+    
     public void skillAssessment(User a){
         System.out.println("============================== Skilled Assessment ===============================");
                  String[][] questions = {
@@ -419,7 +419,7 @@ public void personalityAssessment( User a) {
     }
    
     System.out.println("=================================== Personality Assessment ======================================");
-    // Questions for the personality test
+   
    String[] QUESTIONS = {
     "I enjoy analyzing complex problems to find efficient solutions.",
     "I pay close attention to details when working on a project.",
@@ -429,7 +429,7 @@ public void personalityAssessment( User a) {
     "I persist through difficulties until I find a solution."
 };
 
-// Corresponding traits for each question
+
    String[] TRAITS = {
     "Analytical Thinking",
     "Attention to Detail",
@@ -439,7 +439,7 @@ public void personalityAssessment( User a) {
     "Persistence"
 };
 
-  // Possible career suggestions based on dominant trait
+  
    String[][] CAREERS = {
     {"Data Analyst", "Systems Analyst", "Software Developer"},
     {"Quality Assurance Engineer", "Technical Writer", "Database Administrator"},
@@ -451,7 +451,7 @@ public void personalityAssessment( User a) {
     Scanner scanner = new Scanner(System.in);
     int[] scores = new int[TRAITS.length];
     
-    // Ask each question and record the response
+   
     for (int i = 0; i < QUESTIONS.length; i++) {
         System.out.println(QUESTIONS[i]);
         System.out.print("Rate your agreement (1-5): ");
@@ -463,7 +463,7 @@ public void personalityAssessment( User a) {
         scores[i] = response;
     }
 
-    // Determine the dominant trait
+   
     int maxScoreIndex = 0;
     for (int i = 1; i < scores.length; i++) {
         if (scores[i] > scores[maxScoreIndex]) {
@@ -471,7 +471,7 @@ public void personalityAssessment( User a) {
         }
     }
     
-    // Display the result
+    
     String s="";
     a.setPersonalityTraits(TRAITS[maxScoreIndex]);
    

@@ -2,7 +2,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.Scanner;
 
-import com.mysql.cj.xdevapi.PreparableStatement;
+
 
 public class RecruiterMenu extends Recruiter{
      static User u=new User();
@@ -50,10 +50,7 @@ public class RecruiterMenu extends Recruiter{
             System.out.println("Invalid email. Please re-enter the email.");
         }
     }
-    public static void main(String[] args) throws Exception {
-        RecruiterMenu r=new RecruiterMenu();
-        r.signUpMenu();
-    }
+  
     private void findUserByEmail(String input) throws Exception{
         boolean b=false;
         if(Recruiter.getRecruiterByEmail(input)!=null){
@@ -160,7 +157,8 @@ public class RecruiterMenu extends Recruiter{
            System.out.println("2. Add Job Listings");
            System.out.println("3. Search User");
            System.out.println("4. view applications");
-           System.out.println("5. Log out");
+           System.out.println("5. View Posted Job Listings");
+           System.out.println("6. Log out");
             System.out.print("Choose an option: ");
           int choice=sc.nextInt();
             switch (choice) {
@@ -172,6 +170,8 @@ public class RecruiterMenu extends Recruiter{
                  //  assessments();
                     break;
                 case 3:
+                User u1=new User(); 
+                u1.searchUser();
                // userService.interestProfiling();
                     break;
                 case 4:
@@ -179,8 +179,11 @@ public class RecruiterMenu extends Recruiter{
                     break;
 
                 case 5:
-                System.out.println("Logged out successfully.");
-               exit=false;
+                r.postedJobs();
+                    break;
+                    case 6:
+                    System.out.println("Logged out successfully.");
+                    exit=false;
                     break;
                
                 default:

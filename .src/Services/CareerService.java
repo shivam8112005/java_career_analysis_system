@@ -42,5 +42,5 @@ public class CareerService {
         return career;
     }
 
-    // Other methods for career(jobs) matching, industry insights, etc.
+   
 }
