@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.Reader;
 import java.sql.CallableStatement;
 import java.sql.Clob;
@@ -189,7 +190,8 @@ public void setPassword() {
         System.out.println("5. Edit skills");
         System.out.println("6. Edit Location");
         System.out.println("7. Edit Education");
-        System.out.println("8. Return");
+        System.out.println("8. Edit Resume");
+        System.out.println("9. Return");
         int choice=sc.nextInt();
         switch(choice){
             case 1:viewDetails();
@@ -213,16 +215,91 @@ public void setPassword() {
             case 7:editEducation();
             break;
 
-            case 8:exit=false;
+            case 8:addResumeMenu();
             break;
-
+            case  9:exit=false;
+            break;
             default:System.out.println("Invalid Input !");
             break;
         }
        }
     }
-    public void addResume(){
-        
+    public void addResumeMenu(){
+       boolean b=true;
+       while(b){
+        System.out.println("-------------------------------- Add Resume ----------------------------");
+        System.out.println("1. Add Resume File");
+        System.out.println("2. Update Resume");
+        System.out.println("3. Remove Resume");
+        System.out.println("4. Return");
+        int ch=sc.nextInt();
+        switch (ch) {
+            case 1:
+            this.addResume(1);
+                break;
+                case 2:
+                this.addResume(0);
+                break;
+                case 3:
+                try{
+                  File f=new File("D://shivam//Resumes.txt");
+                  FileReader fr=new FileReader(f);
+                  String sql="update users set resume =? where id=?";
+                  PreparedStatement pst=DatabaseUtil.getConnection().prepareStatement(sql);
+                  pst.setCharacterStream(1, fr);
+                  pst.setInt(2, this.getId());
+                  int r=pst.executeUpdate();
+                  if(r>0){
+                      System.out.println("Resume File Removed successfully.");
+                  }else{
+                      System.out.println("Resume File Not Removed!");
+                  }
+                }catch(Exception e){
+                    System.out.println(e.getMessage());
+                }
+                case 4:b=false;
+                break;
+            default:System.out.println("Enter Valid Input !");
+                break;
+        }
+       }
+    }
+    public void addResume(int i){
+   
+    String fileName;
+    if(i==1){sc.nextLine();
+        System.out.print("Enter the file name: ");
+         fileName = sc.nextLine();
+    }else{sc.nextLine();
+        System.out.print("Enter the new file name: ");
+         fileName = sc.nextLine();
+    }
+    
+        File file = new File(fileName);
+        if (!file.exists() ){
+            System.out.println("File Not Found!");
+            return;
+        }else if(!file.isFile()){
+            System.out.println("Name you entered is not a File!");
+            return;
+        }
+    String sql="update users set resume =? where id=?";
+    try {FileReader fr=new FileReader(file);
+        PreparedStatement pst=DatabaseUtil.getConnection().prepareStatement(sql);
+        pst.setCharacterStream(1, fr);
+        pst.setInt(2, this.getId());
+        int r=pst.executeUpdate();
+            if(r>0){
+                System.out.println("Resume File added successfully.");
+            }else{
+                System.out.println("Resume File Not Added!");
+            }
+    } catch (Exception e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+    }
+    
+
     }
     public void viewDetails( ){
         System.out.println("----------------------------- Personal Details -------------------------------");
@@ -236,6 +313,35 @@ public void setPassword() {
         System.out.println("Personality Trait: "+this.getPersonalityTraits());
         System.out.println("---------------------------------- Skills --------------------------------------");
         viewSkills();
+        System.out.print("View User Resume?(yes/no): ");
+        String c=sc.next();
+        if(c.equalsIgnoreCase("yes")){
+         System.out.println();
+         try {
+             String sql="SELECT RESUME from users where id=?";
+             PreparedStatement ps=DatabaseUtil.getConnection().prepareStatement(sql);
+             ps.setInt(1, this.getId());
+             ResultSet r1=ps.executeQuery();
+             if(r1.next()){
+                 boolean bool=true;
+                 Clob c1=r1.getClob("resume");
+             Reader r=c1.getCharacterStream();
+             BufferedReader br=new BufferedReader(r);
+             String s=br.readLine();
+             while(s!=null){
+                 bool=false;
+                 System.out.println(s);
+                 s=br.readLine();
+             }if(bool){
+                 System.out.println("No Resume Added by User.");
+             }
+             }
+             
+          }catch (Exception e) {
+             // TODO Auto-generated catch block
+             e.printStackTrace();
+         }
+        }
     }
     public void editName() throws Exception{
         System.out.println("---------------------------------- Edit Name -------------------------------");
@@ -352,7 +458,6 @@ public void setPassword() {
                 this.skills.enqueue(new Skill(arr[k], rs1.getString("skill_name")));
             }
         } 
-        
     }
     public void editSkills( ) throws Exception{
         boolean exit=true;
@@ -402,7 +507,6 @@ public void setPassword() {
             i++;
         }
         System.out.println();
-      
     }
     public void removeSkills() throws Exception{
         System.out.println("------------------------------------ Your Skills ----------------------------------");
@@ -442,7 +546,6 @@ public void setPassword() {
         }else{
             System.out.println("Removed available skills.");
         }
-        
     }
     public void editLocation( ) throws Exception{
         System.out.println("---------------------------------- Edit Location ---------------------------------");

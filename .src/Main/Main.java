@@ -1,10 +1,22 @@
 
+import java.io.File;
+import java.io.FileReader;
+import java.sql.PreparedStatement;
 import java.util.Scanner;
 public class Main {
     private static final Scanner scanner = new Scanner(System.in);
     private static final UserService userService = new UserService();
     private static final CareerService careerService = new CareerService();
     public static void main(String[] args) throws Exception {
+        String sql="Insert into users(resume) values(?)";
+   
+    // String sql1="update users set resume=? where id=?";
+    // PreparedStatement pst=DatabaseUtil.getConnection().prepareStatement(sql1);
+    // File f=new File("D:/shivam/temp.txt");
+    // FileReader fr=new FileReader(f);
+    // pst.setCharacterStream(1, fr);
+    // pst.setInt(2, 1);
+    // pst.executeUpdate();
         while (true) {
             System.out.println("=============================== Choose Account Type ==============================");
             System.out.println("1. Jobseeker");
