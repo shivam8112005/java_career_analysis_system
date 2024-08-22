@@ -1203,7 +1203,7 @@ public void setPassword() {
         if(ch==0){
             return;
         }
-        String q1="SELECT job_id FROM user_jobs1 WHERE user_id=? AND job_id=? ";
+        String q1="SELECT job_id, hired FROM user_jobs1 WHERE user_id=? AND job_id=? ";
         PreparedStatement pst1=DatabaseUtil.getConnection().prepareStatement(q1);
         pst1.setInt(1, this.getId());
         pst1.setInt(2, ch);
@@ -1231,6 +1231,7 @@ public void setPassword() {
                 }else{
                     System.out.println("Job Status: Active");
                 }
+                
             }
             if(rs2.next()){
                 String querry2="SELECT * FROM recruiters WHERE id = ?";
@@ -1265,12 +1266,17 @@ public void setPassword() {
             System.out.println("Email: "+rs3.getString("email"));
             System.out.println("Phone Number: "+rs3.getLong("phonenumber"));
             System.out.println("Company: "+rs3.getString("companyname"));
-            jobsApllied();
+            if(rs1.getBoolean("hired")){
+                System.out.println("**************** Congratulations Your Application is Accepted ! ****************");
+            }else{
+                System.out.println("______________ Application InReview ______________");
+            }
            
         }else{
             System.out.println("Job Id Invalid !");
-            jobsApllied();
-        }}
+            
+        } jobsApllied();
+    }
        
             
         
@@ -1573,10 +1579,11 @@ public void setPassword() {
                 }
             }Connection con=DatabaseUtil.getConnection();
             con.setAutoCommit(false);
-            String querry="INSERT INTO user_jobs1(user_id, job_id) VALUES(?, ?)";
+            String querry="INSERT INTO user_jobs1(user_id, job_id, hired) VALUES(?, ?, ?)";
             PreparedStatement pst1=con.prepareStatement(querry);
             pst1.setInt(1, this.getId());
             pst1.setInt(2, jobId);
+            pst1.setBoolean(3, false);
             int r=pst1.executeUpdate();
             System.out.print("Are you Sure to apply to this job?(yes/no): ");
             String h=sc.next();
