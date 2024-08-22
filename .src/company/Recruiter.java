@@ -598,31 +598,46 @@ public static Recruiter getRecruiterByEmail(String email) throws Exception {
                 System.out.print("Recruit?(yes/no): ");
                 String ch1=sc.next();
                 if(ch1.equalsIgnoreCase("yes")){
-                 this.recruit(jid);
+                 this.recruit(jid,ch);
                 }
-                viewApplications();
+                
             }
         }else{
             System.out.println("No such Application found!");
-            viewApplications();
-        }
+        }viewApplications();
     } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
         
     }
-    public void recruit(int jid){
+    public void recruit(int jid, int uid){
         try(Connection con= DatabaseUtil.getConnection();) {
            
             con.setAutoCommit(false);
             String s1="UPDATE job_listings1 SET is_active=? where id=?";
+            String sql="update user_jobs1 set hired =? where job_id=? and user_id=?";
+            String q1="select is_active from job_listings1 where id=?";
+            PreparedStatement ps=DatabaseUtil.getConnection().prepareStatement(q1);
+            ps.setInt(1, jid);
+            ResultSet rs=ps.executeQuery();
+            if(rs.next()){
+                if(rs.getBoolean("is_active")){
+                    System.out.println("Job is Inactive!");
+                    System.out.println("Candidate Already Recruited.");
+                    return;
+                }
+            }
+            PreparedStatement pst1=DatabaseUtil.getConnection().prepareStatement(sql);
             PreparedStatement pst;
-         
+            pst1.setBoolean(1, true);
+            pst1.setInt(2, jid);
+            pst1.setInt(3, uid);
                 pst = con.prepareStatement(s1);
                 pst.setInt(1, 1);
                 pst.setInt(2, jid);
-                int r=pst.executeUpdate();
+                pst.executeUpdate();
+                pst1.executeUpdate();   
                 System.out.print("Are you sure to Recruit this candidate?(yes/no): ");
                 String ch=sc.next();
                 if(ch.equalsIgnoreCase("yes")){
