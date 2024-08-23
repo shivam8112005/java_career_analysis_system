@@ -1,3 +1,5 @@
+import java.io.File;
+import java.io.FileReader;
 import java.sql.Connection;
 
 import java.sql.SQLException;
@@ -21,7 +23,7 @@ public class UserService extends User{
    
     public void addUser(User user, String email) throws Exception{
         try (Connection connection = DatabaseUtil.getConnection()) {
-            String query = "INSERT INTO users (name, email, phonenumber, password, location, education, experience, personality_traits) VALUES (?, ?, ?, ?, ?, ?, ?, ? )";
+            String query = "INSERT INTO users (name, email, phonenumber, password, location, education, experience, personality_traits, resume) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             preparedStatement.setString(1, user.getName());
             preparedStatement.setString(2, user.getEmail());
@@ -31,6 +33,9 @@ public class UserService extends User{
             preparedStatement.setString(6, user.getEducation());
             preparedStatement.setString(7, user.getExperience());
             preparedStatement.setString(8, user.getPersonalityTraits());
+            File f=new File("D://shivam//Resumes.txt");
+                  FileReader fr=new FileReader(f);
+            preparedStatement.setCharacterStream(9, fr);
             preparedStatement.executeUpdate();
             String query1="SELECT id FROM users WHERE email= ?";
             PreparedStatement pst=connection.prepareStatement(query1);

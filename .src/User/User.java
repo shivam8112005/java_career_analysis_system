@@ -24,11 +24,12 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.sql.CallableStatement;
 import java.sql.Clob;
-public class User {
+public class User implements Runnable{
     static Scanner sc=new Scanner(System.in);
     public Stack<String> skillAssessmentResultLog=new Stack<>();
     public Stack<String>  personalityAssessmentResultLog=new Stack<>();
     public ArrayList1<String> resumes=new ArrayList1<>();
+   public ArrayList1<String> resume1;
     public Queue<Skill> skills=new Queue<>();
     public static HashMap<String,User> users=new HashMap<>();
     private int id;
@@ -182,6 +183,9 @@ public void setPassword() {
     public void profile( ) throws Exception{
        boolean exit=true;
        while(exit){
+        
+        Thread t=new Thread(this);
+        t.start();
         System.out.println("=================================== Profile =================================");
         System.out.println("1. View Details");
         System.out.println("2. Edit Name");
@@ -301,6 +305,38 @@ public void setPassword() {
     
 
     }
+    public void run(){
+        try {
+             resume1 =new ArrayList1<>();
+            String sql="SELECT RESUME from users where id=?";
+            PreparedStatement ps=DatabaseUtil.getConnection().prepareStatement(sql);
+            ps.setInt(1, this.getId());
+           // System.out.println("bfewufuer 1111111111");
+            ResultSet r1=ps.executeQuery();
+            if(r1.next()){
+                boolean bool=true;
+                Clob c1=r1.getClob("resume");
+             Reader r=c1.getCharacterStream();
+             BufferedReader br=new BufferedReader(r);
+             String s=br.readLine();
+             while(s!=null){
+                bool=false;
+                resume1.add(s);
+                s=br.readLine();
+            }if(bool){
+               // System.out.println("fgewiugfuew");
+               resume1.add("No Resume Added by User !");
+            }
+            }else{
+                resume1.add("No Resume Added by User !");
+            }
+            
+         }catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        
+         }
+    }
     public void viewDetails( ){
         System.out.println("----------------------------- Personal Details -------------------------------");
         System.out.println("User Id: "+this.getId());
@@ -317,32 +353,12 @@ public void setPassword() {
         String c=sc.next();
         if(c.equalsIgnoreCase("yes")){
          System.out.println();
-         try {
-             String sql="SELECT RESUME from users where id=?";
-             PreparedStatement ps=DatabaseUtil.getConnection().prepareStatement(sql);
-             ps.setInt(1, this.getId());
-             ResultSet r1=ps.executeQuery();
-             if(r1.next()){
-                 boolean bool=true;
-                 Clob c1=r1.getClob("resume");
-             Reader r=c1.getCharacterStream();
-             BufferedReader br=new BufferedReader(r);
-             String s=br.readLine();
-             while(s!=null){
-                 bool=false;
-                 System.out.println(s);
-                 s=br.readLine();
-             }if(bool){
-                 System.out.println("No Resume Added by User.");
-             }
-             }
-             
-          }catch (Exception e) {
-             // TODO Auto-generated catch block
-             e.printStackTrace();
+         //System.out.println(resume1.size());
+        // System.out.println(resume1.get(0));
+         for(int i=0;i<resume1.size();i++){
+            System.out.println(resume1.get(i));
          }
-        }
-    }
+         }}
     public void editName() throws Exception{
         System.out.println("---------------------------------- Edit Name -------------------------------");
         System.out.print("Enter new Name: ");
