@@ -17,6 +17,7 @@ public class Main {
     // pst.setCharacterStream(1, fr);
     // pst.setInt(2, 1);
     // pst.executeUpdate();
+   
         while (true) {
             System.out.println("=============================== Choose Account Type ==============================");
             System.out.println("1. Jobseeker");

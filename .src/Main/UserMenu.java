@@ -149,7 +149,9 @@ public class UserMenu extends User {
         System.out.println("User created and signed in successfully.");
     }
     public void userMenu(User u) throws Exception{
-       
+        //User u1=new User();
+   
+
         boolean exit=true;
         while (exit) {
             System.out.println("============================== Career Analysis System ===================================");

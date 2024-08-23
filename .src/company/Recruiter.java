@@ -11,7 +11,7 @@ import java.util.Scanner;
 
 import com.mysql.cj.protocol.Resultset;
 
-class Recruiter extends User{
+class Recruiter extends User implements Runnable{
     static Scanner sc=new Scanner(System.in);
     public int id;
     private String name;
@@ -20,6 +20,8 @@ class Recruiter extends User{
     private String password;
     private long phonenumber;
     public String companyname;
+    ArrayList1<String> det;
+    
     
 public int getId() {
         return id;
@@ -104,8 +106,7 @@ public static Recruiter getRecruiterByEmail(String email) throws Exception {
                  user.setCompanyname(resultSet.getString("companyname"));
                  user.setPhonenumber(resultSet.getLong("phonenumber"));
                  user.setLocation(resultSet.getString("location"));
-                // user.setEducation(resultSet.getString("education"));
-               //  user.setPersonalityTraits(resultSet.getString("personality_traits"));
+               
                  user.setPassword(resultSet.getString("password"));
              }
          } catch (SQLException e) {
@@ -116,6 +117,9 @@ public static Recruiter getRecruiterByEmail(String email) throws Exception {
      public void profile( ) throws Exception{
         boolean exit=true;
         while(exit){
+            
+            Thread t=new Thread(this);
+            t.start();
          System.out.println("=================================== Profile =================================");
          System.out.println("1. View Details");
          System.out.println("2. Edit Name");
@@ -152,17 +156,24 @@ public static Recruiter getRecruiterByEmail(String email) throws Exception {
          }
         }
      }
-     @Override
-     public void viewDetails( ){
-        System.out.println("----------------------------- Personal Details -------------------------------");
-        System.out.println("User Id: "+this.getId());
-        System.out.println("Name: "+this.getName());
-        System.out.println("Email: "+this.getEmail());
-        System.out.println("Contact Number: "+this.getPhonenumber());
-        System.out.println("Location: "+this.getLocation());
-     System.out.println("Company Name: "+this.getCompanyname());
+     
+     public void run( ){
+        det=new ArrayList1<>();
+        det.add("User Id: "+this.getId());
+        det.add("Name: "+this.getName());
+       det.add("Email: "+this.getEmail());
+        det.add("Contact Number: "+this.getPhonenumber());
+        det.add("Location: "+this.getLocation());
+     det.add("Company Name: "+this.getCompanyname());
        
     } 
+    @Override
+    public void viewDetails(){
+        System.out.println("----------------------------- Details -------------------------------");
+        for(int i=0;i<det.size();i++){
+            System.out.println(det.get(i));
+        }
+    }
 @Override
      public void editName() throws Exception{
         System.out.println("---------------------------------- Edit Name -------------------------------");
