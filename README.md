@@ -1,15 +1,23 @@
-Overview:-
-The Career Analysis System is a Java-based application designed to assist users in exploring career options, 
-planning educational pathways, building Resumes, and preparing for job searches. It utilizes MySQL for data storage,
-offering personalized career assessments, educational recommendations, and job application support.
+Career Analysis System - Java Console Application
 
-Key Features:-
-Personalized Assessments: Evaluate skills, interests, and personality traits to match users with suitable careers.
-Career Exploration: Database of career paths, job roles, and industry insights for informed decision-making.
-Educational Planning: Recommend courses and skills development based on career goals.
-Job Search Support: Tools for resume building, interview preparation, and to apply to a job listings.
-On the other side we have Recruiter account who can add joblistings for their company and can see who have applied to their corresponding job listings
-they can also recruit that user.
+Developed a robust console-based Career Analysis System in Java, showcasing proficiency in object-oriented programming (OOP), recursion, encapsulation, file I/O, exception handling, and multithreading. Leveraged Java generics to implement key data structures such as stacks, queues, linked lists, and array lists, ensuring efficient data management throughout the application.
+
+Integrated MySQL for database management, utilizing advanced concepts like transaction management, stored procedures, junction tables, and SQL joins. The system features distinct functionalities for both jobseekers and recruiters:
+
+Jobseeker Functionalities:
+
+Manage and update profiles
+Search and apply for jobs
+Search users within the system
+Build resumes and undergo assessments
+Utilize career matching to find suitable roles
+
+Recruiter Functionalities:
+
+Recruit jobseekers who have applied for positions
+Search for users within the system
+Manage and update recruiter profiles
+This project exemplifies a comprehensive application of core Java and DBMS concepts, tailored to enhance the recruitment and job-searching process.
 
 Technologies Used:-
 Backend: Java
