@@ -24,7 +24,8 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.sql.CallableStatement;
 import java.sql.Clob;
-public class User implements Runnable{
+
+public class User implements Runnable, UserInterface{
     static Scanner sc=new Scanner(System.in);
     public Stack<String> skillAssessmentResultLog=new Stack<>();
     public Stack<String>  personalityAssessmentResultLog=new Stack<>();
@@ -50,21 +51,10 @@ public class User implements Runnable{
         return education;
     }
 
-    public long getPhonenumber() {
-        return phonenumber;
-    }
-    public void setPhonenumber(long phonenumber) {
-        this.phonenumber = phonenumber;
-    }
-    public String getExperience() {
+    String getExperience() {
         return experience;
     }
-    public void setExperience(String experience) {
-        this.experience = experience;
-    }
-    public void setEducation(String education) {
-        this.education = education;
-    }
+   
      public String getPassword() {
         return password;
     }
@@ -73,10 +63,58 @@ public class User implements Runnable{
         return location;
     }
 
+    public long getPhonenumber() {
+    return phonenumber;
+    }
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public Queue<Skill> getSkills() {
+        return skills;
+    }
+
+    
     public void setLocation(String location) {
         this.location = location;
     }
+    public void setEducation(String education) {
+        this.education = education;
+    }
+    public void setPhonenumber(long phonenumber) {
+        this.phonenumber = phonenumber;
+    }
+    public void setExperience(String experience) {
+        this.experience = experience;
+    }
+    public String getPersonalityTraits() {
+        return personalityTraits;
+    }
 
+    public void setPersonalityTraits(String personalityTraits) {
+        this.personalityTraits = personalityTraits;
+    }
+    @Override
+   public String toString() {
+       return "User [id=" + id + ", name=" + name + ", email=" + email + ", location="
+               + location + ", education=" + education + ", personalityTraits=" + personalityTraits + "]";
+   }
 public void setPassword() {
         while (true) {
             System.out.print("Enter password (minimum 8 characters, must include letters and digits): ");
@@ -90,43 +128,7 @@ public void setPassword() {
         
     }
 
-    public void setId(int id) {
-         this.id = id;
-     }
-
-     public String getName() {
-         return name;
-     }
-
-     public void setName(String name) {
-         this.name = name;
-     }
-
-     public String getEmail() {
-         return email;
-     }
-
-     public void setEmail(String email) {
-         this.email = email;
-     }
-
-     public Queue<Skill> getSkills() {
-         return skills;
-     }
-
-     
-     public String getPersonalityTraits() {
-         return personalityTraits;
-     }
-
-     public void setPersonalityTraits(String personalityTraits) {
-         this.personalityTraits = personalityTraits;
-     }
-     @Override
-    public String toString() {
-        return "User [id=" + id + ", name=" + name + ", email=" + email + ", location="
-                + location + ", education=" + education + ", personalityTraits=" + personalityTraits + "]";
-    }
+    
     public boolean isValidEmail(String email) {
         // Simple validation to check the email format contains "@" and "."
         int atPosition = email.indexOf('@');
@@ -180,10 +182,9 @@ public void setPassword() {
         }
         return false;
     }
-    public void profile( ) throws Exception{
+    public void profile( ){
        boolean exit=true;
        while(exit){
-        
         Thread t=new Thread(this);
         t.start();
         System.out.println("=================================== Profile =================================");
@@ -201,22 +202,52 @@ public void setPassword() {
             case 1:viewDetails();
             break;
 
-            case 2:editName();
+            case 2:try {
+                    editName();
+                } catch (Exception e) {
+                    // TODO Auto-generated catch block
+                    System.out.println(e.getMessage());
+                }
             break;
 
-            case 3:editPassword();
+            case 3:try {
+                    editPassword();
+                } catch (Exception e) {
+                    // TODO Auto-generated catch block
+                    System.out.println(e.getMessage());
+                }
             break;
 
-            case 4:editEmail();
+            case 4:try {
+                    editEmail();
+                } catch (Exception e) {
+                    // TODO Auto-generated catch block
+                    System.out.println(e.getMessage());
+                }
             break;
 
-            case 5:editSkills();
+            case 5:try {
+                    editSkills();
+                } catch (Exception e) {
+                    // TODO Auto-generated catch block
+                    System.out.println(e.getMessage());
+                }
             break;
 
-            case 6:editLocation();
+            case 6:try {
+                    editLocation();
+                } catch (Exception e) {
+                    // TODO Auto-generated catch block
+                    System.out.println(e.getMessage());
+                }
             break;
 
-            case 7:editEducation();
+            case 7:try {
+                    editEducation();
+                } catch (Exception e) {
+                    // TODO Auto-generated catch block
+                    System.out.println(e.getMessage());
+                }
             break;
 
             case 8:addResumeMenu();
@@ -278,8 +309,8 @@ public void setPassword() {
         System.out.print("Enter the new file name: ");
          fileName = sc.nextLine();
     }
-    
-        File file = new File(fileName);
+    String s="D://shivam//"+fileName+".txt";
+        File file = new File(s);
         if (!file.exists() ){
             System.out.println("File Not Found!");
             return;
@@ -374,18 +405,20 @@ public void setPassword() {
         }else{
             System.out.println("Name not updated !");
         }
-    }
+    }InputValidator ip=new InputValidator();
     public void editPassword() throws Exception{
         System.out.println("---------------------------------- Edit Password ----------------------------------");
         System.out.print("Enter email: ");
         String email=sc.next();
+        sc.nextLine();
         System.out.println();
         if(isValidEmail(email)){
             if(email.equals(this.email)){
-                setPassword();
+                this.setPassword();
+                String n1=ip.encryptPassword(this.getPassword());
                 String querry="{call passupdation(?,?)}";
                 CallableStatement cst=DatabaseUtil.getConnection().prepareCall(querry);
-                cst.setString(1, this.password);
+                cst.setString(1, n1);
                 cst.setString(2, this.email);
                 boolean b=cst.execute();
                 if(!b){
@@ -419,8 +452,8 @@ public void setPassword() {
                 this.email=email;
                 String querry1="{call emailupdation(?,?)}";
                 CallableStatement cst=DatabaseUtil.getConnection().prepareCall(querry1);
-                cst.setInt(1, this.id);
-                cst.setString(2, email);
+                cst.setString(1, email);
+                cst.setInt(2, this.id);
                 boolean b=cst.execute();
                 if(!b){
                     System.out.println("Email Updated Successfully.");
@@ -452,6 +485,7 @@ public void setPassword() {
         String querry2="SELECT user_id  FROM user_skills WHERE user_id = ? AND skill_id= ?";
         PreparedStatement pst1=DatabaseUtil.getConnection().prepareStatement(querry2);
         pst1.setInt(1, this.getId());
+        int cnt=0;
         for(int j=0;j<num;j++){
             int num1=sc.nextInt();
            while(num1<7 || num1>31){
@@ -462,9 +496,17 @@ public void setPassword() {
            if(!rs1.next()){
             UserService.insertUserSkill(this.getId(),num1);
             arr[j]=num1;
+            cnt++;
            }
            
-        }   
+        }   if(cnt==num){
+            System.out.println("Added all Skills.");
+        }else if(cnt==0){
+            System.out.println("You Already Have All skills.");
+        }
+        else{
+            System.out.println("Added Skills which you don't had.");
+        }
         String querry1="SELECT skill_name FROM skills WHERE id = ?";
         PreparedStatement pst=DatabaseUtil.getConnection().prepareStatement(querry1);
         for(int k=0;k<arr.length;k++){
@@ -574,7 +616,7 @@ public void setPassword() {
         pst.setString(1, this.location);
         pst.setString(2, this.email);
         pst.executeUpdate();
-        System.out.println();
+        System.out.println("Location Upddated successfully.");
     }
     public void editEducation( ) throws Exception{
         System.out.println("------------------------------------- Edit Education ----------------------------------");
@@ -587,7 +629,7 @@ public void setPassword() {
         pst.setString(1, this.education);
         pst.setString(2, this.email);
         pst.executeUpdate();
-        System.out.println();
+        System.out.println("Education Updated Successfully.");
     }
     public void buildResume(){
        boolean exit=true;
@@ -1025,7 +1067,10 @@ public void setPassword() {
             }else{
                 System.out.println("User Not Found!");
             }
-        }}
+        }else{
+            System.out.println("No User Found!");
+        }
+    }
                      catch (Exception e) {
                         // TODO Auto-generated catch block
                         e.printStackTrace();
@@ -1064,9 +1109,10 @@ public void setPassword() {
             if(n==0){
                 return;
             }
-            String querry1="SELECT email FROM users WHERE id = ?";
+            String querry1="SELECT email FROM users WHERE id = ? and name=?";
             PreparedStatement pst1=DatabaseUtil.getConnection().prepareStatement(querry1);
             pst1.setInt(1, n);
+            pst1.setString(2, name1);
             ResultSet rs1=pst1.executeQuery();
             if(rs1.next()){
                User u= getUserByEmail(rs1.getString("email"));

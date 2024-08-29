@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
 public class UserService extends User{
+    InputValidator ip=new InputValidator();
     static HashMap<String, String> recommendations = new HashMap<>();
     
     
@@ -25,10 +26,11 @@ public class UserService extends User{
         try (Connection connection = DatabaseUtil.getConnection()) {
             String query = "INSERT INTO users (name, email, phonenumber, password, location, education, experience, personality_traits, resume) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
             PreparedStatement preparedStatement = connection.prepareStatement(query);
+            String n=ip.encryptPassword(user.getPassword());
             preparedStatement.setString(1, user.getName());
             preparedStatement.setString(2, user.getEmail());
             preparedStatement.setLong(3, user.getPhonenumber());
-            preparedStatement.setString(4, user.getPassword());
+            preparedStatement.setString(4, n);
             preparedStatement.setString(5, user.getLocation());
             preparedStatement.setString(6, user.getEducation());
             preparedStatement.setString(7, user.getExperience());

@@ -10,6 +10,7 @@ public class RecruiterMenu extends Recruiter{
     Recruiter r;
     int choice;
     DatabaseUtil du=new DatabaseUtil();
+    InputValidator ip=new InputValidator();
     public  void signUpMenu() throws Exception{
         boolean exit = true;
         
@@ -61,7 +62,8 @@ public class RecruiterMenu extends Recruiter{
             while(true){
             System.out.print("enter password: ");
             String password=sc.next();
-            if(password.equals(Recruiter.getRecruiterByEmail(input).getPassword())){
+            String n1=ip.encryptPassword(password);
+            if(n1.equals(Recruiter.getRecruiterByEmail(input).getPassword())){
                 r=Recruiter.getRecruiterByEmail(input);
                 System.out.println("---------------------------------- Welcome Again! ---------------------------------------");
                 recruiterMenu(u);
@@ -76,9 +78,10 @@ public class RecruiterMenu extends Recruiter{
                 int userid=sc.nextInt();
                 if(userid==Recruiter.getRecruiterByEmail(input).getId()){
                     r.setPassword();
+                    String n=ip.encryptPassword(r.getPassword());
                     String querry="UPDATE recruiters SET password = ? WHERE email = ?";
                     PreparedStatement cst=DatabaseUtil.getConnection().prepareStatement(querry);
-                    cst.setString(1, r.getPassword());
+                    cst.setString(1, n);
                     cst.setString(2,r.getEmail());
                     int b1=cst.executeUpdate();
                     if(b1>0){
@@ -120,7 +123,7 @@ public class RecruiterMenu extends Recruiter{
         String name = sc.nextLine();
         System.out.print("Enter Phonenumber: ");
         long pn=sc.nextLong();
-        while(pn<7000000000l || pn>9999999999l){
+        while(pn<6000000000l || pn>9999999999l){
             System.out.println("Enter Valid Phonenumber !");
             pn=sc.nextLong();
         }sc.nextLine();

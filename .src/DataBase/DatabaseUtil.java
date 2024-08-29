@@ -173,17 +173,18 @@ public class DatabaseUtil {
             e.printStackTrace();
         } 
         
-    }
+    }InputValidator ip=new InputValidator();
 
     public void addRecruiter(Recruiter user, String email) throws Exception{
        // System.out.println("asfewi dij1111111111111111111111");
         try (Connection connection = DatabaseUtil.getConnection()) {
             String query = "INSERT INTO recruiters (name, email, phonenumber, password, location, companyname) VALUES (?, ?, ?, ?, ?, ? )";
             PreparedStatement preparedStatement = connection.prepareStatement(query);
+            String n=ip.encryptPassword(user.getPassword());
             preparedStatement.setString(1, user.getName());
             preparedStatement.setString(2, user.getEmail());
             preparedStatement.setLong(3, user.getPhonenumber());
-            preparedStatement.setString(4, user.getPassword());
+            preparedStatement.setString(4, n);
             preparedStatement.setString(5, user.getLocation());
             //preparedStatement.setString(6, user.getEducation());
            // preparedStatement.setString(7, user.getExperience());

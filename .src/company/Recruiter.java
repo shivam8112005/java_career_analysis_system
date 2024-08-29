@@ -11,7 +11,7 @@ import java.util.Scanner;
 
 import com.mysql.cj.protocol.Resultset;
 
-class Recruiter extends User implements Runnable{
+public class Recruiter extends User implements RecruiterInterface{
     static Scanner sc=new Scanner(System.in);
     public int id;
     private String name;
@@ -21,7 +21,7 @@ class Recruiter extends User implements Runnable{
     private long phonenumber;
     public String companyname;
     ArrayList1<String> det;
-    
+    InputValidator ip=new InputValidator();
     
 public int getId() {
         return id;
@@ -62,6 +62,7 @@ public int getId() {
     public void setPassword(String password){
         this.password=password;
      }
+     @Override
     public void setPassword() {
         while (true) {
             System.out.print("Enter password (minimum 8 characters, must include letters and digits): ");
@@ -114,7 +115,7 @@ public static Recruiter getRecruiterByEmail(String email) throws Exception {
          }
          return user;
      }
-     public void profile( ) throws Exception{
+     public void profile( ){
         boolean exit=true;
         while(exit){
             
@@ -133,19 +134,44 @@ public static Recruiter getRecruiterByEmail(String email) throws Exception {
              case 1:viewDetails();
              break;
  
-             case 2:editName();
+             case 2:try {
+                    editName();
+                } catch (Exception e) {
+                    // TODO Auto-generated catch block
+                    System.out.println(e.getMessage());
+                }
              break;
  
-             case 3:editPassword();
+             case 3:try {
+                    editPassword();
+                } catch (Exception e) {
+                    // TODO Auto-generated catch block
+                    System.out.println(e.getMessage());
+                }
              break;
  
-             case 4:editEmail();
+             case 4:try {
+                    editEmail();
+                } catch (Exception e) {
+                    // TODO Auto-generated catch block
+                    System.out.println(e.getMessage());
+                }
              break;
  
-             case 5:editLocation();
+             case 5:try {
+                    editLocation();
+                } catch (Exception e) {
+                    // TODO Auto-generated catch block
+                    System.out.println(e.getMessage());
+                }
              break;
  
-             case 6:editCompany();
+             case 6:try {
+                    editCompany();
+                } catch (Exception e) {
+                    // TODO Auto-generated catch block
+                    System.out.println(e.getMessage());
+                }
              break;
 
              case 7:exit=false;
@@ -200,9 +226,10 @@ public static Recruiter getRecruiterByEmail(String email) throws Exception {
             if(email.equals(this.email)){
                 System.out.print("Enter New Password: ");
                 this.setPassword();
+                String n=ip.encryptPassword(this.getPassword());
                 String querry="UPDATE recruiters SET password = ? WHERE email = ?";
                 PreparedStatement cst=DatabaseUtil.getConnection().prepareStatement(querry);
-                cst.setString(1, this.password);
+                cst.setString(1, n);
                 cst.setString(2, this.email);
                 int b=cst.executeUpdate();
                 if(b>0){
@@ -491,13 +518,15 @@ public static Recruiter getRecruiterByEmail(String email) throws Exception {
         }
      }
      public void viewApplications(){
+        ArrayList<Integer> jids=new ArrayList<>();
+       // ArrayList<Integer> 
         System.out.println("---------------------------------- Job Applications ----------------------------------");
         String sql="SELECT ID FROM job_listings1 where rec_id=?";
         try {
             PreparedStatement pst=DatabaseUtil.getConnection().prepareStatement(sql);
             pst.setInt(1, this.getId());
             ResultSet rs=pst.executeQuery();
-            String sql1="SELECT user_id FROM user_jobs1 where job_id=?";
+            String sql1="SELECT user_id FROM user_jobs1 where job_id=? and hired=false";
             PreparedStatement pst1=DatabaseUtil.getConnection().prepareStatement(sql1);
             int i=1;
             ArrayList<Integer> uid=new ArrayList<>();
@@ -513,6 +542,7 @@ public static Recruiter getRecruiterByEmail(String email) throws Exception {
                     if(rs2.next()){
                         System.out.println(i+".  Name: "+rs2.getString("name")+"   User ID: "+rs2.getInt("id")+"  Job ID: "+rs.getInt("ID")+"  Education: "+rs2.getString("education"));
                         uid.add(rs2.getInt("id"));
+                        jids.add(rs.getInt("ID"));
                        
                     }
                     i++;
@@ -526,9 +556,24 @@ public static Recruiter getRecruiterByEmail(String email) throws Exception {
             int ch=sc.nextInt();
             if(ch==0){
                 return;
+            }while(!uid.contains(ch)){
+                System.out.println("Invalid User Id (Enter 0 to return)!");
+                ch=sc.nextInt();
+                if(ch==0){
+                    return;
+                }
+             
             }
             System.out.print("Enter Job Id: ");
             int jid=sc.nextInt();
+            while(!jids.contains(jid)){
+                System.out.println("Invalid Job Id (Enter 0 return)!");
+                jid=sc.nextInt();
+                if(jid==0){
+                    return;
+                }
+                
+            }
             String df="SELECT * from user_jobs1 where job_id=? AND user_id=?";
             PreparedStatement asd=DatabaseUtil.getConnection().prepareStatement(df);
             asd.setInt(1, jid);
@@ -635,7 +680,7 @@ public static Recruiter getRecruiterByEmail(String email) throws Exception {
             if(rs.next()){
                 if(rs.getBoolean("is_active")){
                     System.out.println("Job is Inactive!");
-                    System.out.println("Candidate Already Recruited.");
+                    System.out.println("Someone is Already Recruited.");
                     return;
                 }
             }
