@@ -25,7 +25,7 @@ import java.io.Reader;
 import java.sql.CallableStatement;
 import java.sql.Clob;
 
-public class User implements Runnable{
+public class User implements Runnable, UserInterface{
     static Scanner sc=new Scanner(System.in);
     public Stack<String> skillAssessmentResultLog=new Stack<>();
     public Stack<String>  personalityAssessmentResultLog=new Stack<>();
@@ -182,7 +182,7 @@ public void setPassword() {
         }
         return false;
     }
-    public void profile( ) throws Exception{
+    public void profile( ){
        boolean exit=true;
        while(exit){
         Thread t=new Thread(this);
@@ -202,22 +202,52 @@ public void setPassword() {
             case 1:viewDetails();
             break;
 
-            case 2:editName();
+            case 2:try {
+                    editName();
+                } catch (Exception e) {
+                    // TODO Auto-generated catch block
+                    System.out.println(e.getMessage());
+                }
             break;
 
-            case 3:editPassword();
+            case 3:try {
+                    editPassword();
+                } catch (Exception e) {
+                    // TODO Auto-generated catch block
+                    System.out.println(e.getMessage());
+                }
             break;
 
-            case 4:editEmail();
+            case 4:try {
+                    editEmail();
+                } catch (Exception e) {
+                    // TODO Auto-generated catch block
+                    System.out.println(e.getMessage());
+                }
             break;
 
-            case 5:editSkills();
+            case 5:try {
+                    editSkills();
+                } catch (Exception e) {
+                    // TODO Auto-generated catch block
+                    System.out.println(e.getMessage());
+                }
             break;
 
-            case 6:editLocation();
+            case 6:try {
+                    editLocation();
+                } catch (Exception e) {
+                    // TODO Auto-generated catch block
+                    System.out.println(e.getMessage());
+                }
             break;
 
-            case 7:editEducation();
+            case 7:try {
+                    editEducation();
+                } catch (Exception e) {
+                    // TODO Auto-generated catch block
+                    System.out.println(e.getMessage());
+                }
             break;
 
             case 8:addResumeMenu();

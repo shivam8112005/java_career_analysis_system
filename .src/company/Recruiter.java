@@ -11,7 +11,7 @@ import java.util.Scanner;
 
 import com.mysql.cj.protocol.Resultset;
 
-public class Recruiter extends User{
+public class Recruiter extends User implements RecruiterInterface{
     static Scanner sc=new Scanner(System.in);
     public int id;
     private String name;
@@ -115,7 +115,7 @@ public static Recruiter getRecruiterByEmail(String email) throws Exception {
          }
          return user;
      }
-     public void profile( ) throws Exception{
+     public void profile( ){
         boolean exit=true;
         while(exit){
             
@@ -134,19 +134,44 @@ public static Recruiter getRecruiterByEmail(String email) throws Exception {
              case 1:viewDetails();
              break;
  
-             case 2:editName();
+             case 2:try {
+                    editName();
+                } catch (Exception e) {
+                    // TODO Auto-generated catch block
+                    System.out.println(e.getMessage());
+                }
              break;
  
-             case 3:editPassword();
+             case 3:try {
+                    editPassword();
+                } catch (Exception e) {
+                    // TODO Auto-generated catch block
+                    System.out.println(e.getMessage());
+                }
              break;
  
-             case 4:editEmail();
+             case 4:try {
+                    editEmail();
+                } catch (Exception e) {
+                    // TODO Auto-generated catch block
+                    System.out.println(e.getMessage());
+                }
              break;
  
-             case 5:editLocation();
+             case 5:try {
+                    editLocation();
+                } catch (Exception e) {
+                    // TODO Auto-generated catch block
+                    System.out.println(e.getMessage());
+                }
              break;
  
-             case 6:editCompany();
+             case 6:try {
+                    editCompany();
+                } catch (Exception e) {
+                    // TODO Auto-generated catch block
+                    System.out.println(e.getMessage());
+                }
              break;
 
              case 7:exit=false;
