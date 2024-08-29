@@ -3,6 +3,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.sql.PreparedStatement;
 import java.util.Scanner;
+
 public class Main {
     private static final Scanner scanner = new Scanner(System.in);
     private static final UserService userService = new UserService();

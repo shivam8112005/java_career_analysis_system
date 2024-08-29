@@ -2,14 +2,20 @@ import java.util.*;
 import java.sql.CallableStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
-public class UserMenu extends User {
+public class UserMenu extends User{
     private static final UserService userService = new UserService();
     static Scanner sc=new Scanner(System.in);
     User u;
     int choice;
+
+    @Override
+    public void run(){
+        DatabaseUtil.copySkills(u);
+        DatabaseUtil.copyPtResultLog(u);
+        DatabaseUtil.copySkillResultLog(u);
+    }
     public  void signUpMenu() throws Exception{
         boolean exit = true;
-        
         while (exit) {
             System.out.println("================================== User Menu ==================================");
             System.out.println("1. Sign Up");
@@ -49,7 +55,7 @@ public class UserMenu extends User {
             }
             System.out.println("Invalid email. Please re-enter the email.");
         }
-    }
+    }InputValidator ip=new InputValidator();
     private void findUserByEmail(String input) throws Exception{
         boolean b=false;
         if(User.getUserByEmail(input)!=null){
@@ -60,13 +66,13 @@ public class UserMenu extends User {
             while(true){
             System.out.print("enter password: ");
             String password=sc.next();
-            if(password.equals(User.getUserByEmail(input).getPassword())){
+            String n=ip.encryptPassword(password);
+            if(n.equals(User.getUserByEmail(input).getPassword())){
                 u=User.getUserByEmail(input);
                 u.pt++;
                 System.out.println("---------------------------------- Welcome Again! ---------------------------------------");
-                DatabaseUtil.copySkills(u);
-                DatabaseUtil.copyPtResultLog(u);
-                DatabaseUtil.copySkillResultLog(u);
+               Thread t=new Thread(this);
+               t.start();
                 userMenu(u);
                 break;
             }else{
@@ -80,8 +86,9 @@ public class UserMenu extends User {
                 if(userid==User.getUserByEmail(input).getId()){
                 u.setPassword();
                 String querry="{call passupdation(?,?)}";
+                String n1=ip.encryptPassword(u.getPassword());
                 CallableStatement cst=DatabaseUtil.getConnection().prepareCall(querry);
-                cst.setString(1, u.getPassword());
+                cst.setString(1, n1);
                 cst.setString(2, u.getEmail());
                 boolean b1=cst.execute();
                 if(!b1){
@@ -123,7 +130,7 @@ public class UserMenu extends User {
         String name = sc.nextLine();
         System.out.print("Enter Phonenumber: ");
         long pn=sc.nextLong();
-        while(pn<7000000000l || pn>9999999999l){
+        while(pn<6000000000l || pn>9999999999l){
             System.out.println("Enter Valid Phonenumber !");
             pn=sc.nextLong();
         }sc.nextLine();
