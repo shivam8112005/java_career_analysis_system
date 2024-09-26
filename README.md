@@ -97,5 +97,4 @@ java CareerAnalysisSystem
 ## Contribution
 Feel free to contribute to the project by opening a pull request or submitting issues. Your suggestions for new features and enhancements are welcome!
 
-## License
-This project is licensed under the MIT License. See the LICENSE file for more details.
+
