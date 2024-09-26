@@ -303,10 +303,10 @@ public void setPassword() {
    
     String fileName;
     if(i==1){sc.nextLine();
-        System.out.print("Enter the file name: ");
+        System.out.print("Enter the file name from D://shivam : ");
          fileName = sc.nextLine();
     }else{sc.nextLine();
-        System.out.print("Enter the new file name: ");
+        System.out.print("Enter the new file name from D://shivam : ");
          fileName = sc.nextLine();
     }
     String s="D://shivam//"+fileName+".txt";
