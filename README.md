@@ -9,12 +9,19 @@ This application demonstrates advanced Java concepts such as:
 
 ## Object-Oriented Programming (OOP)
 Recursion
+
 Encapsulation
+
 Abstraction
+
 File I/O
+
 Exception Handling
+
 Multithreading
+
 Java Generics for data structure management
+
 ## DBMS
 Transaction Management
 Stored Procedures
