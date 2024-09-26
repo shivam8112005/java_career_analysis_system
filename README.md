@@ -94,6 +94,11 @@ javac CareerAnalysisSystem.java
 
 java CareerAnalysisSystem
 
+### note 
+To use build resume functionality there should be file already exists in your computer having this path "D://shivam//Resumes.txt"  (in file User.java loc=663 and loc=737)
+and to upload resume in your profile from your computer functionality file should be present at this path ""D://shivam//" + File_name + ".txt" (in file User.java loc=312)
+
+
 ## Contribution
 Feel free to contribute to the project by opening a pull request or submitting issues. Your suggestions for new features and enhancements are welcome!
 
