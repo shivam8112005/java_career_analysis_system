@@ -64,7 +64,7 @@ JDBC (Java Database Connectivity): Used for establishing connections and executi
 ## Installation and Setup
 Clone the repository:
 
-git clone https://github.com/shivam8112005/java_career_analysis_system
+git clone [https://github.com/shivam8112005/java_career_analysis_system](https://github.com/shivam8112005/java_career_analysis_system.git)
 
 cd career-analysis-system
 
