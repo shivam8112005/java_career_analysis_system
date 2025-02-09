@@ -347,33 +347,33 @@ public class UserService extends User{
         if(recommendation==null){
             String recomendation1="";
             if(interest==1){
-                recomendation1+="Data Science or ";
+                recomendation1+=" Data Science or ";
             }else if(interest==2){
-                recomendation1+="Web Devloper or ";
+                recomendation1+=" Web Devloper or ";
             }else if(interest==3){
-                recomendation1+="Game Devloper or ";
+                recomendation1+=" Game Devloper or ";
             }else if(interest==4){
-                recomendation1+="Cyber Security or Ethical Hacking or ";
+                recomendation1+=" Cyber Security or Ethical Hacking or ";
             }else if(interest==5){
                 recomendation1+="Cloud Computing or ";
             }else if(interest==6){
-                recomendation1+="AI development and Machine Learning Engineering";
+                recomendation1+=" AI development and Machine Learning Engineering";
             }else if(interest==7){
-                recomendation1+="Robotics Engineering or ";
+                recomendation1+=" Robotics Engineering or ";
             }
             if(passion==1){
-                recomendation1+="Big Data Analytics";
+                recomendation1+=" Big Data Analytics";
             }
             else if(passion==2){
-                recomendation1+="Full Stack Development";
+                recomendation1+=" Full Stack Development";
             }else if(passion==3){
-                recomendation1+="Game Design";
+                recomendation1+=" Game Design";
             }else if(passion==4){
-                recomendation1+="Security Analysis";
+                recomendation1+=" Security Analysis";
             }else if(passion==5){
-                recomendation1+="Cloud Architecture";
+                recomendation1+=" Cloud Architecture";
             }else if(passion==7){
-                recomendation1+="Automation";
+                recomendation1+=" Automation";
             }
             System.out.println("----------------------------------------------------------------------------------------");
             System.out.println("Based on your choices, here are some recommendations: ");
@@ -495,7 +495,8 @@ public void personalityAssessment( User a) {
         s+="- "+career;
     }
      Timestamp eventTime = Timestamp.from(Instant.now());
-    a.personalityAssessmentResultLog.push("  Date/Time: "+eventTime+" "+TRAITS[maxScoreIndex]+" : - "+s);
+    //  +" : - "+s
+    a.personalityAssessmentResultLog.push("  Date/Time: "+eventTime+" Personality Trait: "+TRAITS[maxScoreIndex]);
 //scanner.nextLine();
   //  scanner.close();
 }
